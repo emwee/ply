@@ -1,3 +1,5 @@
 <?php
 
-class Book extends ActiveRecord\Model { }
+class Book extends ActiveRecord\Model {
+
+}

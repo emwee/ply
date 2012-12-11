@@ -1,5 +1,5 @@
 {
-    "hash": "fc8d083d24101dd8a8397195b6fc504a",
+    "hash": "36ec6f559ab6ad486a7b3150469496d7",
     "packages": [
         {
             "name": "mustache/mustache",
@@ -141,7 +141,7 @@
             ]
         },
         {
-            "name": "speedy-php/active-record",
+            "name": "zquintana/ActiveRecord",
             "version": "dev-speedy",
             "source": {
                 "type": "git",
@@ -192,6 +192,6 @@
     "stability-flags": {
         "slim/extras": 20,
         "mustache/mustache": 20,
-        "speedy-php/active-record": 20
+        "zquintana/activerecord": 20
     }
 }

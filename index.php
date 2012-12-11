@@ -1,6 +1,7 @@
 <?php
 
 require 'vendor/autoload.php';
+require 'vendor/zquintana/ActiveRecord/ActiveRecord.php';
 
 \Slim\Extras\Views\Mustache::$mustacheDirectory = 'vendor/mustache/mustache/src/Mustache';
 \Slim\Extras\Views\Mustache::$mustacheEngineOptions = array(
@@ -14,7 +15,7 @@ require 'vendor/autoload.php';
 ActiveRecord\Config::initialize(function($cfg) {
     $cfg->set_model_directory('models');
     $cfg->set_connections(array(
-        'development' => 'mysql://root:root@localhost/ply'
+        'development' => 'mysql://root:@192.168.1.99/emwee'
     ));
 });
 
@@ -40,12 +41,15 @@ $app = new \Slim\Slim(array(
 	'view' => new \Slim\Extras\Views\Mustache()
 ));
 
-class Book extends ActiveRecord\Model { }
+//class Book extends ActiveRecord\Model { }
 
-$book = new Book(array('name' => 'Jax'));
+$book = new Book();
+$book->name = "Book!";
 $book->save();
 
-var_dump($data); 
+var_dump($book);
+
+var_dump(Book::find('all'));
 
 //$app->add(new \AllCapsMiddleware());
 

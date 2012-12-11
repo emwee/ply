@@ -2,7 +2,6 @@
 	"require": {
 		"slim/slim": "2.*",
 		"slim/extras": "dev-master",
-		"mustache/mustache": "dev-feature/logging",
-		"speedy-php/active-record": "dev-speedy"
+		"mustache/mustache": "dev-feature/logging"
 	}
 }
