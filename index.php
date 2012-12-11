@@ -1,21 +1,8 @@
 <?php
-/**
- * Step 1: Require the Slim Framework
- *
- * If you are not using Composer, you need to require the
- * Slim Framework and register its PSR-0 autoloader.
- *
- * If you are using Composer, you can skip this step.
- */
-// require 'Slim/Slim.php';
-// 
-// \Slim\Slim::registerAutoloader();
 
-$app_root = '/Applications/MAMP/htdocs/ply/';
+require 'vendor/autoload.php';
 
-require $app_root.'vendor/autoload.php';
-
-\Slim\Extras\Views\Mustache::$mustacheDirectory = $app_root.'vendor/mustache/mustache/src/Mustache';
+\Slim\Extras\Views\Mustache::$mustacheDirectory = 'vendor/mustache/mustache/src/Mustache';
 \Slim\Extras\Views\Mustache::$mustacheEngineOptions = array(
 	'partials_loader' => new \Mustache_Loader_FilesystemLoader('templates/partials'),
 	'escape' => function($value) {
@@ -23,6 +10,13 @@ require $app_root.'vendor/autoload.php';
 	},
 	'charset' => 'ISO-8859-1'
 );
+
+ActiveRecord\Config::initialize(function($cfg) {
+    $cfg->set_model_directory('models');
+    $cfg->set_connections(array(
+        'development' => 'mysql://root:root@localhost/ply'
+    ));
+});
 
 class AllCapsMiddleware extends \Slim\Middleware
 {
@@ -46,6 +40,13 @@ $app = new \Slim\Slim(array(
 	'view' => new \Slim\Extras\Views\Mustache()
 ));
 
+class Book extends ActiveRecord\Model { }
+
+$book = new Book(array('name' => 'Jax'));
+$book->save();
+
+var_dump($data);
+
 //$app->add(new \AllCapsMiddleware());
 
 $app->hook('slim.before', function () {
@@ -62,7 +63,6 @@ $app->notFound(function () use ($app) {
 class Bla {
 	
 	public $name = 'Maarten';
-	
 	public $date = 'Maarten';
 	
 	public function name() {
@@ -88,6 +88,17 @@ $app->get('/hello/:name+/archive(/:year(/:month(/:day)))', function ($name, $yea
 		$app->notFound();
 	} else {
 		//$app->render('hello.mustache', array( 'name' => $name ));
+		
+		$view = $app->view();
+		$view->setData(array(
+		    'color' => 'red',
+		    'size' => 'medium'
+		));
+		
+		$view->appendData(array(
+		    'size' => 'large'
+		));
+		
 		$app->render('hello.mustache', array('data' => $bla ));
 	}
 })->name('hello');

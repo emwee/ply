@@ -1,5 +1,5 @@
 {
-    "hash": "a99c4b05dfda884996d37ea5f4350421",
+    "hash": "2e89b30721ec56e6e40558b7f5f0da72",
     "packages": [
         {
             "name": "mustache/mustache",
@@ -139,6 +139,49 @@
                 "rest",
                 "router"
             ]
+        },
+        {
+            "name": "zquintana/ActiveRecord",
+            "version": "dev-speedy",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zquintana/ActiveRecord",
+                "reference": "bd1edf955de9d772338798b9a37669a38b926679"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/zquintana/ActiveRecord/archive/bd1edf955de9d772338798b9a37669a38b926679.zip",
+                "reference": "bd1edf955de9d772338798b9a37669a38b926679",
+                "shasum": ""
+            },
+            "time": "2012-12-06 22:19:37",
+            "type": "library",
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "ActiveRecord": "lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "SpeedyPHP Development Team"
+                },
+                {
+                    "name": "php-activerecord development team"
+                },
+                {
+                    "name": "Zachary Quintana"
+                }
+            ],
+            "description": "ActiveRecord package being used with SpeedyPHP",
+            "keywords": [
+                "activerecord",
+                "SpeedyPHP"
+            ]
         }
     ],
     "packages-dev": null,
@@ -148,6 +191,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "slim/extras": 20,
-        "mustache/mustache": 20
+        "mustache/mustache": 20,
+        "zquintana/activerecord": 20
     }
 }
