@@ -10,5 +10,5 @@ return array(
     'Slim\\Extras' => $vendorDir . '/slim/extras/.',
     'Slim' => $vendorDir . '/slim/slim/.',
     'Mustache' => $vendorDir . '/mustache/mustache/src/',
-    'ActiveRecord' => $vendorDir . '/zquintana/ActiveRecord/lib',
+    'ActiveRecord' => $vendorDir . '/speedy-php/active-record/lib',
 );

@@ -3,6 +3,6 @@
         "slim/slim": "2.*",
 	    "slim/extras": "dev-master",
 	    "mustache/mustache": "dev-feature/logging",
-	    "zquintana/ActiveRecord": "dev-speedy"
+	    "speedy-php/active-record": "dev-speedy"
     }
 }

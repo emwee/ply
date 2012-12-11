@@ -142,7 +142,7 @@
         ]
     },
     {
-        "name": "zquintana/ActiveRecord",
+        "name": "speedy-php/active-record",
         "version": "dev-speedy",
         "version_normalized": "dev-speedy",
         "source": {

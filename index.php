@@ -45,7 +45,7 @@ class Book extends ActiveRecord\Model { }
 $book = new Book(array('name' => 'Jax'));
 $book->save();
 
-var_dump($data);
+var_dump($data); 
 
 //$app->add(new \AllCapsMiddleware());
 
