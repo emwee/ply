@@ -2,6 +2,7 @@
 	"require": {
 		"slim/slim": "2.*",
 		"slim/extras": "dev-master",
-		"mustache/mustache": "dev-feature/logging"
+		"mustache/mustache": "dev-feature/logging",
+		"kriswallsmith/assetic": "1.1.x-dev"
 	}
 }

@@ -19,6 +19,28 @@ ActiveRecord\Config::initialize(function($cfg) {
     ));
 });
 
+use Assetic\Asset\AssetCollection;
+use Assetic\AssetManager;
+use Assetic\Asset\FileAsset;
+use Assetic\Asset\GlobAsset;
+
+
+$js = new AssetCollection(array(
+    new GlobAsset('js/*'),
+    new FileAsset('js/bar.js')
+));
+
+$am = new AssetManager();
+$am->set('foo', new FileAsset('js/foo.js'));
+
+var_dump($am->getNames());
+
+echo "<script>";
+echo $js->dump();
+echo "</script>";
+
+die();
+
 class AllCapsMiddleware extends \Slim\Middleware
 {
     public function call()
@@ -41,15 +63,17 @@ $app = new \Slim\Slim(array(
 	'view' => new \Slim\Extras\Views\Mustache()
 ));
 
-//class Book extends ActiveRecord\Model { }
-
 $book = new Book();
 $book->name = "Book!";
 $book->save();
 
 var_dump($book);
+/*
 
-var_dump(Book::find('all'));
+foreach (Book::find('all') as $book) {
+	var_dump($book->to_json());
+}
+*/
 
 //$app->add(new \AllCapsMiddleware());
 
@@ -88,7 +112,7 @@ $app->get('/hello/:name+/archive(/:year(/:month(/:day)))', function ($name, $yea
 	$bla = new \Bla;
 	$bla->setDate(sprintf('%s-%s-%s', $year, $month, $day));
 	
-	if ( $name === 'Waldo' ) {
+	if ( is_array($name) && $name[0] === 'Waldo' ) {
 		$app->notFound();
 	} else {
 		//$app->render('hello.mustache', array( 'name' => $name ));
