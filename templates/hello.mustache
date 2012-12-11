@@ -1,5 +1,9 @@
-Hey {{data.name}} / {{data.date}}! I'm a Mustache template.
+Hey {{ data.name }} / {{ data.date }}! I'm a Mustache template..
 
-<p>{{color}} / {{size}}</p>
+<p>{{ color }} / {{ size }} / {{#test}}{{ size }}{{/test}}</p>
 
-{{>bar}}
+<p>dd</p>
+
+{{#_i18n}}Hello.{{/_i18n}} 
+
+{{> bar }}

@@ -1,94 +1,108 @@
 <?php
 
 require 'vendor/autoload.php';
-require 'vendor/zquintana/ActiveRecord/ActiveRecord.php';
 
-\Slim\Extras\Views\Mustache::$mustacheDirectory = 'vendor/mustache/mustache/src/Mustache';
-\Slim\Extras\Views\Mustache::$mustacheEngineOptions = array(
-	'partials_loader' => new \Mustache_Loader_FilesystemLoader('templates/partials'),
-	'escape' => function($value) {
-		return htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
-	},
-	'charset' => 'ISO-8859-1'
-);
-
-ActiveRecord\Config::initialize(function($cfg) {
-    $cfg->set_model_directory('models');
-    $cfg->set_connections(array(
-        'development' => 'mysql://root:@192.168.1.99/emwee'
-    ));
-});
-
-use Assetic\Asset\AssetCollection;
-use Assetic\AssetManager;
-use Assetic\Asset\FileAsset;
-use Assetic\Asset\GlobAsset;
-
-
-$js = new AssetCollection(array(
-    new GlobAsset('js/*'),
-    new FileAsset('js/bar.js')
-));
-
-$am = new AssetManager();
-$am->set('foo', new FileAsset('js/foo.js'));
-
-var_dump($am->getNames());
-
-echo "<script>";
-echo $js->dump();
-echo "</script>";
-
-die();
-
-class AllCapsMiddleware extends \Slim\Middleware
+class MustacheView extends \Slim\View
 {
-    public function call()
+    /**
+     * @var string The path to the directory containing Mustache.php
+     */
+    public static $mustacheDirectory = null;
+
+    /**
+     * Renders a template using Mustache.php.
+     *
+     * @see View::render()
+     * @param string $template The template name specified in Slim::render()
+     * @return string
+     */
+    public function render($template)
     {
-        // Get reference to application
-        $app = $this->app;
-
-        // Run inner middleware and application
-        $this->next->call();
-
-        // Capitalize response body
-        $res = $app->response();
-        $body = $res->body();
-        $res->body(strtoupper($body));
+        require_once self::$mustacheDirectory . '/Autoloader.php';
+        \Mustache_Autoloader::register(dirname(self::$mustacheDirectory));
+			$m = new \Mustache_Engine;
+			$m->setPartialsLoader(new \Mustache_Loader_FilesystemLoader('templates/partials'));
+			$m->addHelper('_i18n', function($text) {
+				// IRL, you would use something far more robust :)
+				$dictionary = array(
+					'Hello.' => 'Hola.',
+					'My name is {{ name }}.' => 'Me llamo {{ name }}.'
+				);
+				return array_key_exists($text, $dictionary) ? $dictionary[$text] : $text;
+			});
+			$m->addHelper('test', function($text) {
+				return 'test!';
+			});
+			
+			
+        $contents = file_get_contents($this->getTemplatesDirectory() . '/' . ltrim($template, '/'));
+        return $m->render($contents, $this->data);
     }
 }
 
+MustacheView::$mustacheDirectory = 'vendor/mustache/mustache/src/Mustache';
+
+// ActiveRecord\Config::initialize(function($cfg) {
+// 	$cfg->set_model_directory('models');
+// 	$cfg->set_connections(array(
+//         'development' => 'mysql://root:root@localhost/ply'
+//     ));
+// });
+
+ORM::configure('mysql:host=localhost;dbname=ply');
+ORM::configure('username', 'root');
+ORM::configure('password', 'root');
+
+class Book extends Model
+{
+}
+
+echo '<pre>';
+
+$books = Model::factory('Book')->find_many();
+
+echo json_encode(array_map(function ($book) {
+    return $book->as_array();
+}, $books));
+
+echo '</pre>';
+
+// use Assetic\Asset\AssetCollection;
+// use Assetic\AssetManager;
+// use Assetic\Asset\FileAsset;
+// use Assetic\Asset\GlobAsset;
+// 
+// 
+// $js = new AssetCollection(array(
+//     new GlobAsset('js/*'),
+//     new FileAsset('js/bar.js')
+// ));
+// 
+// $am = new AssetManager();
+// $am->set('foo', new FileAsset('js/foo.js'));
+// 
+// var_dump($am->getNames());
+// 
+// echo "<script>";
+// echo $js->dump();
+// echo "</script>";
+// 
+// die();
+
 $app = new \Slim\Slim(array(
 	'log.enabled' => true,
-	'view' => new \Slim\Extras\Views\Mustache()
+	'view' => new MustacheView()
 ));
 
-$book = new Book();
-$book->name = "Book!";
-$book->save();
-
-var_dump($book);
-/*
-
-foreach (Book::find('all') as $book) {
-	var_dump($book->to_json());
-}
-*/
-
-//$app->add(new \AllCapsMiddleware());
-
 $app->hook('slim.before', function () {
-   echo 'rolling..<hr />';
+   echo 'slim rolling..<hr />';
 });
-
-$log = $app->getLog();
-$log->setLevel(\Slim\Log::WARN);
 
 $app->notFound(function () use ($app) {
     echo '404';
 });
 
-class Bla {
+class ViewModel {
 	
 	public $name = 'Maarten';
 	public $date = 'Maarten';
@@ -103,13 +117,13 @@ class Bla {
 }
 
 $app->get('/test', function () use ($app) {
-	$bla = new \Bla;
+	$bla = new \ViewModel;
 	$app->render('hello.mustache', array('data' => $bla));
 });
 
 $app->get('/hello/:name+/archive(/:year(/:month(/:day)))', function ($name, $year = 2010, $month = 12, $day = 05) use ($app) {
 	
-	$bla = new \Bla;
+	$bla = new \ViewModel;
 	$bla->setDate(sprintf('%s-%s-%s', $year, $month, $day));
 	
 	if ( is_array($name) && $name[0] === 'Waldo' ) {
@@ -133,25 +147,10 @@ $app->get('/hello/:name+/archive(/:year(/:month(/:day)))', function ($name, $yea
 
 var_dump($app->urlFor('hello', array('name' => 'Joe/Hoe', 'year' => '2006')));
 
-// POST route
-$app->post('/post', function () {
-    echo 'This is a POST route';
-});
-
-// PUT route
-$app->put('/put', function () {
-    echo 'This is a PUT route';
-});
-
-// DELETE route
-$app->delete('/delete', function () {
-    echo 'This is a DELETE route';
-});
-
 $app->run();
 
-if ($app->response()->isOk()) {
-	echo '<pre>';
-	var_dump($app->response());
-	var_dump($app->response()->status());
-}
+// if ($app->response()->isOk()) {
+// 	echo '<pre>';
+// 	var_dump($app->response());
+// 	var_dump($app->response()->status());
+// }

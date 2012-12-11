@@ -1,8 +1,8 @@
 {
 	"require": {
-		"slim/slim": "2.*",
-		"slim/extras": "dev-master",
-		"mustache/mustache": "dev-feature/logging",
-		"kriswallsmith/assetic": "1.1.x-dev"
+        "slim/slim": "2.*",
+        "mustache/mustache": "2.0.*",
+        "dccampbell/idiormparis": "dev-master",
+        "kriswallsmith/assetic": "1.1.x-dev"
 	}
 }

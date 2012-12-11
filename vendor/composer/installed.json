@@ -45,103 +45,6 @@
         ]
     },
     {
-        "name": "slim/extras",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "target-dir": "Slim/Extras",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/codeguy/Slim-Extras",
-            "reference": "a831f4e0a7e52ea7b982edaa9fe0e5b1640412d6"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://github.com/codeguy/Slim-Extras/archive/a831f4e0a7e52ea7b982edaa9fe0e5b1640412d6.zip",
-            "reference": "a831f4e0a7e52ea7b982edaa9fe0e5b1640412d6",
-            "shasum": ""
-        },
-        "require": {
-            "slim/slim": ">=2.0.0",
-            "php": ">=5.3.0"
-        },
-        "time": "2012-11-02 12:54:16",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "Twig_Extensions_": "Views/Extension/",
-                "Slim\\Extras": "."
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Andrew Smith",
-                "email": "a.smith@silentworks.co.uk",
-                "homepage": "http://www.silentworks.co.uk/"
-            },
-            {
-                "name": "Josh Lockhart",
-                "email": "info@joshlockhart.com",
-                "homepage": "http://www.joshlockhart.com/"
-            }
-        ],
-        "description": "Extras package for the Slim Framework",
-        "homepage": "http://github.com/codeguy/Slim-Extras",
-        "keywords": [
-            "templating",
-            "extensions",
-            "middleware"
-        ]
-    },
-    {
-        "name": "mustache/mustache",
-        "version": "dev-feature/logging",
-        "version_normalized": "dev-feature/logging",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/bobthecow/mustache.php",
-            "reference": "7522e2206dc3593f3314d6c132c4c8a8cb9a164b"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://github.com/bobthecow/mustache.php/archive/7522e2206dc3593f3314d6c132c4c8a8cb9a164b.zip",
-            "reference": "7522e2206dc3593f3314d6c132c4c8a8cb9a164b",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.2.4"
-        },
-        "time": "2012-12-01 03:01:47",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "Mustache": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Justin Hileman",
-                "email": "justin@justinhileman.info",
-                "homepage": "http://justinhileman.com"
-            }
-        ],
-        "description": "A Mustache implementation in PHP.",
-        "homepage": "https://github.com/bobthecow/mustache.php",
-        "keywords": [
-            "templating",
-            "mustache"
-        ]
-    },
-    {
         "name": "symfony/process",
         "version": "v2.1.4",
         "version_normalized": "2.1.4.0",
@@ -256,6 +159,103 @@
             "assets",
             "compression",
             "minification"
+        ]
+    },
+    {
+        "name": "mustache/mustache",
+        "version": "v2.0.2",
+        "version_normalized": "2.0.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/bobthecow/mustache.php",
+            "reference": "v2.0.2"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://github.com/bobthecow/mustache.php/zipball/v2.0.2",
+            "reference": "v2.0.2",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2.4"
+        },
+        "time": "2012-09-12 09:13:06",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Mustache": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Justin Hileman",
+                "email": "justin@justinhileman.info",
+                "homepage": "http://justinhileman.com"
+            }
+        ],
+        "description": "A Mustache implementation in PHP.",
+        "homepage": "https://github.com/bobthecow/mustache.php",
+        "keywords": [
+            "templating",
+            "mustache"
+        ]
+    },
+    {
+        "name": "dccampbell/idiormparis",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/dccampbell/idiormparis.git",
+            "reference": "v1.2.0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://github.com/dccampbell/idiormparis/archive/v1.2.0.zip",
+            "reference": "v1.2.0",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2.0"
+        },
+        "time": "2012-11-01 14:38:05",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "classmap": [
+                "src/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD"
+        ],
+        "authors": [
+            {
+                "name": "Jamie Matthews",
+                "email": "jamie.matthews@gmail.com",
+                "homepage": "http://j4mie.org/",
+                "role": "Creator"
+            },
+            {
+                "name": "David C. Campbell",
+                "email": "david@dccampbell.com",
+                "homepage": "http://www.dccampbell.com/"
+            }
+        ],
+        "description": "Idiorm and Paris -- An ORM/Active-Record Combo -- packaged for easy autoloading.",
+        "homepage": "http://github.com/dccampbell/idiormparis",
+        "keywords": [
+            "database",
+            "orm",
+            "activerecord",
+            "idiorm",
+            "paris"
         ]
     }
 ]
