@@ -41,9 +41,6 @@ class MustacheView extends \Slim\View
 }
 
 MustacheView::$mustacheDirectory = 'vendor/mustache/mustache/src/Mustache';
-
-var_dump($_SERVER);
-
 if ($_SERVER['SERVER_NAME'] == 'dev4.mediamatic.nl') {
 	ORM::configure('mysql:host=192.168.1.99;dbname=emwee');
 	ORM::configure('username', 'root');
@@ -58,6 +55,7 @@ else {
 class Book extends Model
 {
 }
+/*
 
 echo '<pre>';
 
@@ -68,6 +66,7 @@ echo json_encode(array_map(function ($book) {
 }, $books));
 
 echo '</pre>';
+*/
 
 // use Assetic\Asset\AssetCollection;
 // use Assetic\AssetManager;
@@ -92,13 +91,8 @@ echo '</pre>';
 // die();
 
 $app = new \Slim\Slim(array(
-	'log.enabled' => true,
 	'view' => new MustacheView()
 ));
-
-$app->hook('slim.before', function () {
-   echo 'slim rolling..<hr />';
-});
 
 $app->notFound(function () use ($app) {
     echo '404';
@@ -147,7 +141,7 @@ $app->get('/hello/:name+/archive(/:year(/:month(/:day)))', function ($name, $yea
 	}
 })->name('hello');
 
-var_dump($app->urlFor('hello', array('name' => 'Joe/Hoe', 'year' => '2006')));
+/* var_dump($app->urlFor('hello', array('name' => 'Joe/Hoe', 'year' => '2006'))); */
 
 $app->run();
 

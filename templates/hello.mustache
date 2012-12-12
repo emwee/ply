@@ -1,9 +1,22 @@
-Hey {{ data.name }} / {{ data.date }}! I'm a Mustache template..
-
-<p>{{ color }} / {{ size }} / {{#test}}{{ size }}{{/test}}</p>
-
-<p>dd</p>
-
-{{#_i18n}}Hello.{{/_i18n}} 
-
-{{> bar }}
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>Ply</title>
+		<script data-main="/~maarten/ply/js/main" src="/~maarten/ply/js/lib/require/require.js"></script>
+	</head>
+	<body>
+	
+		<pre>	
+		Hey {{ data.name }} / {{ data.date }}! I'm a Mustache template..
+	
+		<p>{{ color }} / {{ size }} / {{#test}}{{ size }}{{/test}}</p>
+		
+		<p>dd</p>
+		
+		{{#_i18n}}Hello.{{/_i18n}} 
+		
+		{{> bar }}
+		
+		</pre>
+	</body>
+</html>
