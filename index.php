@@ -42,16 +42,18 @@ class MustacheView extends \Slim\View
 
 MustacheView::$mustacheDirectory = 'vendor/mustache/mustache/src/Mustache';
 
-// ActiveRecord\Config::initialize(function($cfg) {
-// 	$cfg->set_model_directory('models');
-// 	$cfg->set_connections(array(
-//         'development' => 'mysql://root:root@localhost/ply'
-//     ));
-// });
+var_dump($_SERVER);
 
-ORM::configure('mysql:host=localhost;dbname=ply');
-ORM::configure('username', 'root');
-ORM::configure('password', 'root');
+if ($_SERVER['SERVER_NAME'] == 'dev4.mediamatic.nl') {
+	ORM::configure('mysql:host=192.168.1.99;dbname=emwee');
+	ORM::configure('username', 'root');
+	ORM::configure('password', '');
+}
+else {
+	ORM::configure('mysql:host=localhost;dbname=ply');
+	ORM::configure('username', 'root');
+	ORM::configure('password', 'root');
+}
 
 class Book extends Model
 {
