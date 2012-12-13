@@ -1,0 +1,20 @@
+<html>
+	{{> header}}
+	<body>
+		<pre>]
+		
+			{{#has_books}}
+				<ul>
+					{{#books}}
+						{{> book}}
+					{{/books}}
+				</ul>
+			{{/has_books}}
+			{{^has_books}}
+				NO BOOKS
+			{{/has_books}}
+			
+		</pre>
+		{{> footer}}
+	</body>
+</html>
