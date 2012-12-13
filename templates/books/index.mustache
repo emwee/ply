@@ -1,0 +1,17 @@
+<html>
+	{{> header}}
+	<body>
+		{{> menu}}
+		{{#books_count}}
+			<ul>
+			{{#books}}
+				{{> books/item}}
+			{{/books}}
+			</ul>
+		{{/books_count}}
+		{{^books_count}}
+			NO BOOKS
+		{{/books_count}}
+		{{> footer}}
+	</body>
+</html>
