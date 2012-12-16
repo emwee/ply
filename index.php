@@ -1,5 +1,39 @@
 <?php
 
+error_reporting(E_ALL);
+// 
+// try {
+//   // open connection to MongoDB server
+//   $conn = new Mongo('localhost');
+// 
+//   // access database
+//   $db = $conn->test;
+// 
+//   // access collection
+//   $collection = $db->items;
+// 
+//   // execute query
+//   // retrieve all documents
+//   $cursor = $collection->find();
+// 
+//   // iterate through the result set
+//   // print each document
+//   echo $cursor->count() . ' document(s) found. <br/>';  
+//   foreach ($cursor as $obj) {
+//     echo 'Name: ' . $obj['name'] . '<br/>';
+//     echo 'Quantity: ' . $obj['quantity'] . '<br/>';
+//     echo 'Price: ' . $obj['price'] . '<br/>';
+//     echo '<br/>';
+//   }
+// 
+//   // disconnect from server
+//   $conn->close();
+// } catch (MongoConnectionException $e) {
+//   die('Error connecting to MongoDB server');
+// } catch (MongoException $e) {
+//   die('Error: ' . $e->getMessage());
+// }
+
 require 'vendor/autoload.php';
 
 class MustacheView extends \Slim\View
@@ -17,16 +51,88 @@ class MustacheView extends \Slim\View
     }
 }
 
-if ($_SERVER['SERVER_NAME'] == 'dev4.mediamatic.nl') {
-	ORM::configure('mysql:host=192.168.1.99;dbname=emwee');
-	ORM::configure('username', 'root');
-	ORM::configure('password', '');
+$facebook = new Facebook(array(
+  'appId'  => '196081467087473',
+  'secret' => '88664c4163ba7befebb83cfa2a6cb610',
+));
+
+// Get User ID
+$user = $facebook->getUser();
+
+
+$redis = new Predis\Client('tcp://localhost:6379');
+
+
+
+if ($user) {
+  try {
+    // Proceed knowing you have a logged in user who's authenticated.
+
+	$user_profile = $redis->hgetall('user_profile');
+	
+	echo '<pre>';
+	
+	var_dump('redis');
+	var_dump($user_profile);
+	
+	if (!$user_profile) {
+		$user_profile = $facebook->api('/me');
+		
+		var_dump('fb');
+		print_r($user_profile);
+		
+		$redis->hmset('user_profile', $user_profile);
+	}
+    
+  } catch (FacebookApiException $e) {
+    error_log($e);
+    $user = null;
+  }
 }
-else {
-	ORM::configure('mysql:host=localhost;dbname=ply');
-	ORM::configure('username', 'root');
-	ORM::configure('password', 'root');
+
+$m = new Mongo('localhost');
+
+$db = $m->ply;
+
+$collection = $db->blaa;
+$collection->insert($user_profile);
+
+foreach ($collection->find() as $usr) {
+	var_dump($usr);
+	
+	
 }
+
+
+die();
+
+// Login or logout url will be needed depending on current user state.
+if ($user) {
+  $logoutUrl = $facebook->getLogoutUrl();
+} else {
+  $loginUrl = $facebook->getLoginUrl();
+}
+
+if ($user) {
+   echo '<a href="'.$logoutUrl.'">Logout</a>';
+} else {
+	echo '<a href="'.$loginUrl.'">Login</a>';
+}
+
+
+var_dump($user_profile);
+
+
+// if ($_SERVER['SERVER_NAME'] == 'dev4.mediamatic.nl') {
+// 	ORM::configure('mysql:host=192.168.1.99;dbname=emwee');
+// 	ORM::configure('username', 'root');
+// 	ORM::configure('password', '');
+// }
+// else {
+// 	ORM::configure('mysql:host=localhost;dbname=ply');
+// 	ORM::configure('username', 'root');
+// 	ORM::configure('password', 'root');
+// }
 
 /*
 

@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Symfony\\Component\\Process' => $vendorDir . '/symfony/process/',
     'Slim' => $vendorDir . '/slim/slim/.',
+    'Predis' => $vendorDir . '/predis/predis/lib/',
     'Mustache' => $vendorDir . '/mustache/mustache/src/',
     'Assetic' => $vendorDir . '/kriswallsmith/assetic/src/',
 );
