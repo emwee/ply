@@ -57,71 +57,61 @@ $facebook = new Facebook(array(
 ));
 
 // Get User ID
-$user = $facebook->getUser();
-
+$fb_user_id = $facebook->getUser();
 
 $redis = new Predis\Client('tcp://localhost:6379');
+$mongo = new Mongo('localhost');
+$ply_db = $mongo->ply;
 
-
-
-if ($user) {
-  try {
-    // Proceed knowing you have a logged in user who's authenticated.
-
-	$user_profile = $redis->hgetall('user_profile');
-	
-	echo '<pre>';
-	
-	var_dump('redis');
-	var_dump($user_profile);
-	
-	if (!$user_profile) {
-		$user_profile = $facebook->api('/me');
+if ($fb_user_id) {
+	// proceed knowing you have a logged in user who's authenticated
+	try {
+		// try to read from cache
+		$fb_user = json_decode($redis->hget('fb_users', 'fb_user:'.$fb_user_id));
 		
-		var_dump('fb');
-		print_r($user_profile);
-		
-		$redis->hmset('user_profile', $user_profile);
+		// not in cache, load from database
+		if (!$fb_user) {
+			
+			// fb users collection
+			$fb_users = $ply_db->fb_users;
+			
+			$fb_user = $fb_users->findOne(array('id' => $fb_user_id));
+			
+			// unknown user
+			if (!$fb_user) {
+				
+				// query user from Facebook
+				$fb_user = $facebook->api('/me');
+				
+				// store in db
+				$fb_users->insert($fb_user);
+				
+				// cache it
+				$redis->hset('fb_users', 'fb_user:'.$fb_user_id, json_encode($fb_user));	
+			}
+		}
 	}
-    
-  } catch (FacebookApiException $e) {
-    error_log($e);
-    $user = null;
-  }
+	
+	catch (FacebookApiException $e) {
+		error_log($e);
+		$fb_user_id = null;
+	}
 }
 
-$m = new Mongo('localhost');
-
-$db = $m->ply;
-
-$collection = $db->blaa;
-$collection->insert($user_profile);
-
-foreach ($collection->find() as $usr) {
-	var_dump($usr);
-	
-	
-}
-
+echo '<pre>';
+var_dump($fb_user_id);
+var_dump($fb_user);
+var_dump($fb_user->id);
+var_dump($fb_user->name);
 
 die();
 
 // Login or logout url will be needed depending on current user state.
-if ($user) {
+if ($fb_user_id) {
   $logoutUrl = $facebook->getLogoutUrl();
 } else {
   $loginUrl = $facebook->getLoginUrl();
 }
-
-if ($user) {
-   echo '<a href="'.$logoutUrl.'">Logout</a>';
-} else {
-	echo '<a href="'.$loginUrl.'">Login</a>';
-}
-
-
-var_dump($user_profile);
-
 
 // if ($_SERVER['SERVER_NAME'] == 'dev4.mediamatic.nl') {
 // 	ORM::configure('mysql:host=192.168.1.99;dbname=emwee');
