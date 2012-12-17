@@ -51,6 +51,67 @@ class MustacheView extends \Slim\View
     }
 }
 
+class UserFacebook {
+	
+	var $user_id = null;
+	var $user = null;
+	
+	public function __construct($user_id) {
+		$this->user_id = $user_id;
+		$this->user = $this->getUser();
+	}
+	
+	public function getUser() {
+		echo 'ss';
+		$facebook = new Facebook(array(
+		  'appId'  => '196081467087473',
+		  'secret' => '88664c4163ba7befebb83cfa2a6cb610',
+		));
+		
+		return $facebook->api('/me');
+	}
+}
+
+class UserMongo extends UserFacebook {
+	
+	public function getUser() {
+		$mongo = new Mongo('localhost');
+		$db = $mongo->ply;
+		
+		$fb_users = $ply_db->fb_users;
+		$user = $fb_users->findOne(array('id' => $this->user_id));
+		
+		if (!$user) {
+			$user = parent::getUser();
+		}
+		
+		$fb_users->insert($user);
+		
+		return $user;
+	}
+}
+
+
+class UserRedis extends UserMongo {
+	
+	public function getUser() {
+		$redis = new Predis\Client('tcp://localhost:6379');
+		$user = $redis->hget('fb_users', 'fb_user:'.$this->user_id);
+		
+		if ($user) {
+			$user = json_decode($user);
+		}
+		else {
+			$user = parent::getUser();
+			$redis->hset('fb_users', 'fb_user:'.$this->user_id, json_encode($user));	
+		}
+		
+		return $user;
+	}
+}
+
+class User extends UserRedis {}
+
 $facebook = new Facebook(array(
   'appId'  => '196081467087473',
   'secret' => '88664c4163ba7befebb83cfa2a6cb610',
@@ -59,50 +120,12 @@ $facebook = new Facebook(array(
 // Get User ID
 $fb_user_id = $facebook->getUser();
 
-$redis = new Predis\Client('tcp://localhost:6379');
-$mongo = new Mongo('localhost');
-$ply_db = $mongo->ply;
-
-if ($fb_user_id) {
-	// proceed knowing you have a logged in user who's authenticated
-	try {
-		// try to read from cache
-		$fb_user = json_decode($redis->hget('fb_users', 'fb_user:'.$fb_user_id));
-		
-		// not in cache, load from database
-		if (!$fb_user) {
-			
-			// fb users collection
-			$fb_users = $ply_db->fb_users;
-			
-			$fb_user = $fb_users->findOne(array('id' => $fb_user_id));
-			
-			// unknown user
-			if (!$fb_user) {
-				
-				// query user from Facebook
-				$fb_user = $facebook->api('/me');
-				
-				// store in db
-				$fb_users->insert($fb_user);
-				
-				// cache it
-				$redis->hset('fb_users', 'fb_user:'.$fb_user_id, json_encode($fb_user));	
-			}
-		}
-	}
-	
-	catch (FacebookApiException $e) {
-		error_log($e);
-		$fb_user_id = null;
-	}
-}
+$usr = new User($fb_user_id);
 
 echo '<pre>';
-var_dump($fb_user_id);
-var_dump($fb_user);
-var_dump($fb_user->id);
-var_dump($fb_user->name);
+var_dump($usr);
+var_dump($usr->getUser()->id);
+var_dump($usr->getUser()->name);
 
 die();
 
