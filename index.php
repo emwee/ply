@@ -1,38 +1,6 @@
 <?php
 
 error_reporting(E_ALL);
-// 
-// try {
-//   // open connection to MongoDB server
-//   $conn = new Mongo('localhost');
-// 
-//   // access database
-//   $db = $conn->test;
-// 
-//   // access collection
-//   $collection = $db->items;
-// 
-//   // execute query
-//   // retrieve all documents
-//   $cursor = $collection->find();
-// 
-//   // iterate through the result set
-//   // print each document
-//   echo $cursor->count() . ' document(s) found. <br/>';  
-//   foreach ($cursor as $obj) {
-//     echo 'Name: ' . $obj['name'] . '<br/>';
-//     echo 'Quantity: ' . $obj['quantity'] . '<br/>';
-//     echo 'Price: ' . $obj['price'] . '<br/>';
-//     echo '<br/>';
-//   }
-// 
-//   // disconnect from server
-//   $conn->close();
-// } catch (MongoConnectionException $e) {
-//   die('Error connecting to MongoDB server');
-// } catch (MongoException $e) {
-//   die('Error: ' . $e->getMessage());
-// }
 
 require 'vendor/autoload.php';
 
@@ -64,18 +32,26 @@ $mongo = new Mongo('localhost');
 $ply_db = $mongo->ply;
 
 if ($fb_user_id) {
+	
+	$fb_user = null;
+	
 	// proceed knowing you have a logged in user who's authenticated
 	try {
+		
 		// try to read from cache
-		$fb_user = json_decode($redis->hget('fb_users', 'fb_user:'.$fb_user_id));
+		$users_hash = 'fb_users';
+		$cache_user_key_prefix = 'fb_user:';
+		$cache_user_key = $cache_user_key_prefix.$fb_user_id;
+		
+		if ($redis->hexists($users_hash, $cache_user_key)) {
+			$fb_user = json_decode($redis->hget($users_hash, $cache_user_key));
+		}
 		
 		// not in cache, load from database
 		if (!$fb_user) {
 			
 			// fb users collection
-			$fb_users = $ply_db->fb_users;
-			
-			$fb_user = $fb_users->findOne(array('id' => $fb_user_id));
+			$fb_user = $ply_db->$users_hash->findOne(array('id' => $fb_user_id));
 			
 			// unknown user
 			if (!$fb_user) {
@@ -84,10 +60,10 @@ if ($fb_user_id) {
 				$fb_user = $facebook->api('/me');
 				
 				// store in db
-				$fb_users->insert($fb_user);
+				$ply_db->$users_hash->insert($fb_user);
 				
 				// cache it
-				$redis->hset('fb_users', 'fb_user:'.$fb_user_id, json_encode($fb_user));	
+				$redis->hset($users_hash, $cache_user_key_prefix.$fb_user_id, json_encode($fb_user));
 			}
 		}
 	}
@@ -99,10 +75,85 @@ if ($fb_user_id) {
 }
 
 echo '<pre>';
-var_dump($fb_user_id);
-var_dump($fb_user);
-var_dump($fb_user->id);
-var_dump($fb_user->name);
+// var_dump($fb_user_id);
+// var_dump($fb_user);
+// var_dump($fb_user->id);
+// var_dump($fb_user->name);
+
+// store all facebook friends
+$friends = array();
+
+// facebook pagination parameters
+$fields = 'id,name,first_name,last_name,link,username,gender,locale';
+$offset = 0;
+$limit = 300;
+
+// get friends
+$friends_data = $facebook->api('/me/friends', 'GET', array(
+	'fields' => $fields,
+	'offset' => $offset,
+	'limit' => $limit
+));
+
+// store friends
+if (array_key_exists('data', $friends_data)) {
+	$friends = array_merge($friends, $friends_data['data']);
+	var_dump(count($friends_data['data']));
+}
+
+// paginate + repeat
+while (array_key_exists('paging', $friends_data) && array_key_exists('next', $friends_data['paging'])) {
+	
+	// var_dump('more friends...');
+	// var_dump($friends_data['paging']);
+	// var_dump($facebook->getAccessToken());
+	
+	
+	$offset += $limit;
+	
+	$friends_data = $facebook->api('/me/friends', 'GET', array(
+		'fields' => $fields,
+		'offset' => $offset,
+		'limit' => $limit
+	));
+	
+	$friends = array_merge($friends, $friends_data['data']);
+}
+
+var_dump(count($friends));
+
+// var_dump($friends);
+
+$friend_ids = array();
+
+// cache friends
+foreach($friends as $friend) {
+	
+	 array_push($friend_ids, $friend['id']);
+	
+	if (!$redis->hexists($users_hash, $cache_user_key_prefix.$friend['id'])) {
+		$redis->hset($users_hash, $cache_user_key_prefix.$friend['id'], json_encode($friend));
+	}
+}
+var_dump(count($friends));
+var_dump(count($friend_ids));
+var_dump($friend_ids);
+
+$ply_db->$users_hash->update(array('id' => $fb_user_id ),
+   array(
+     '$set' => array('friends' => $friend_ids)
+   )
+);
+
+// todo: store friends
+//$ply_db->$users_hash->insert($fb_user);
+
+var_dump(':)');
+
+foreach ($redis->hgetall('fb_users') as $fb_user) {
+	$fb_user = json_decode($fb_user);
+	var_dump($fb_user);
+}
 
 die();
 
@@ -112,17 +163,6 @@ if ($fb_user_id) {
 } else {
   $loginUrl = $facebook->getLoginUrl();
 }
-
-// if ($_SERVER['SERVER_NAME'] == 'dev4.mediamatic.nl') {
-// 	ORM::configure('mysql:host=192.168.1.99;dbname=emwee');
-// 	ORM::configure('username', 'root');
-// 	ORM::configure('password', '');
-// }
-// else {
-// 	ORM::configure('mysql:host=localhost;dbname=ply');
-// 	ORM::configure('username', 'root');
-// 	ORM::configure('password', 'root');
-// }
 
 /*
 

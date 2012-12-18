@@ -2,7 +2,6 @@
 	"require": {
         "slim/slim": "2.*",
         "mustache/mustache": "2.0.*",
-        "dccampbell/idiormparis": "dev-master",
         "kriswallsmith/assetic": "1.1.x-dev",
         "facebook/php-sdk": "dev-master",
         "predis/predis": "0.8.x-dev"
