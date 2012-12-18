@@ -118,23 +118,80 @@ $facebook = new Facebook(array(
 ));
 
 // Get User ID
-$fb_user_id = $facebook->getUser();
+$user = $facebook->getUser();
 
+
+<<<<<<< HEAD
 $usr = new User($fb_user_id);
 
 echo '<pre>';
 var_dump($usr);
 var_dump($usr->getUser()->id);
 var_dump($usr->getUser()->name);
+=======
+$redis = new Predis\Client('tcp://localhost:6379');
+
+
+
+if ($user) {
+  try {
+    // Proceed knowing you have a logged in user who's authenticated.
+
+	$user_profile = $redis->hgetall('user_profile');
+	
+	echo '<pre>';
+	
+	var_dump('redis');
+	var_dump($user_profile);
+	
+	if (!$user_profile) {
+		$user_profile = $facebook->api('/me');
+		
+		var_dump('fb');
+		print_r($user_profile);
+		
+		$redis->hmset('user_profile', $user_profile);
+	}
+    
+  } catch (FacebookApiException $e) {
+    error_log($e);
+    $user = null;
+  }
+}
+
+$m = new Mongo('localhost');
+
+$db = $m->ply;
+
+$collection = $db->blaa;
+$collection->insert($user_profile);
+
+foreach ($collection->find() as $usr) {
+	var_dump($usr);
+	
+	
+}
+
+>>>>>>> parent of 42a4ed7... Better caching.
 
 die();
 
 // Login or logout url will be needed depending on current user state.
-if ($fb_user_id) {
+if ($user) {
   $logoutUrl = $facebook->getLogoutUrl();
 } else {
   $loginUrl = $facebook->getLoginUrl();
 }
+
+if ($user) {
+   echo '<a href="'.$logoutUrl.'">Logout</a>';
+} else {
+	echo '<a href="'.$loginUrl.'">Login</a>';
+}
+
+
+var_dump($user_profile);
+
 
 // if ($_SERVER['SERVER_NAME'] == 'dev4.mediamatic.nl') {
 // 	ORM::configure('mysql:host=192.168.1.99;dbname=emwee');
