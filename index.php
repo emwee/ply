@@ -31,6 +31,8 @@ $redis = new Predis\Client('tcp://localhost:6379');
 $mongo = new Mongo('localhost');
 $ply_db = $mongo->ply;
 
+echo '<pre>';
+
 if ($fb_user_id) {
 	
 	$fb_user = null;
@@ -59,10 +61,10 @@ if ($fb_user_id) {
 				// query user from Facebook
 				$fb_user = $facebook->api('/me');
 				
-				// store in db
+				// store in mongo
 				$ply_db->$users_hash->insert($fb_user);
 				
-				// cache it
+				// cache in redis
 				$redis->hset($users_hash, $cache_user_key_prefix.$fb_user_id, json_encode($fb_user));
 			}
 		}
@@ -74,86 +76,121 @@ if ($fb_user_id) {
 	}
 }
 
-echo '<pre>';
+// echo '<pre>';
 // var_dump($fb_user_id);
 // var_dump($fb_user);
 // var_dump($fb_user->id);
 // var_dump($fb_user->name);
 
-// store all facebook friends
-$friends = array();
 
-// facebook pagination parameters
-$fields = 'id,name,first_name,last_name,link,username,gender,locale';
-$offset = 0;
-$limit = 300;
+// FWENDS
 
-// get friends
-$friends_data = $facebook->api('/me/friends', 'GET', array(
-	'fields' => $fields,
-	'offset' => $offset,
-	'limit' => $limit
-));
+$user_entry = $ply_db->$users_hash->findOne(array('id' => $fb_user_id));
 
-// store friends
-if (array_key_exists('data', $friends_data)) {
-	$friends = array_merge($friends, $friends_data['data']);
-	var_dump(count($friends_data['data']));
+$fetch_friends = false;
+
+if (array_key_exists('friends_updated', $user_entry)) {
+	$friends_updated_time = $user_entry['friends_updated'];
+	$time_ago = time() - $friends_updated_time;
+	
+	// var_dump(date(DATE_ATOM, $friends_updated_time));
+	// var_dump(date(DATE_ATOM, $current_time));
+	// var_dump($time_ago);
+	// var_dump($time_ago / (60 * 60)); // hours
+	// var_dump(60*60);
+	
+	if ($time_ago > 60 * 60) {
+		$fetch_friends = true;
+	}
 }
 
-// paginate + repeat
-while (array_key_exists('paging', $friends_data) && array_key_exists('next', $friends_data['paging'])) {
+if ($fetch_friends || true) { // force fetching for testing
 	
-	// var_dump('more friends...');
-	// var_dump($friends_data['paging']);
-	// var_dump($facebook->getAccessToken());
+	echo 'fetching friends!';
+		
+	// to store friends in
+	$friends = array();
 	
+	// FB pagination parameters
+	$fields = 'id,name,first_name,last_name,link,username,gender,locale'; // no spaces!
+	$offset = 0;
+	$limit = 300;
 	
-	$offset += $limit;
-	
+	// fetch FB friends
 	$friends_data = $facebook->api('/me/friends', 'GET', array(
 		'fields' => $fields,
 		'offset' => $offset,
 		'limit' => $limit
 	));
 	
-	$friends = array_merge($friends, $friends_data['data']);
-}
+	// store friends
+	if (array_key_exists('data', $friends_data)) {
+		$friends = array_merge($friends, $friends_data['data']);
+		var_dump(count($friends_data['data']));
+	}
 
-var_dump(count($friends));
+	// paginate + repeat
+	while (array_key_exists('paging', $friends_data) && array_key_exists('next', $friends_data['paging'])) {
 
-// var_dump($friends);
+		// var_dump('more friends...');
+		// var_dump($friends_data['paging']);
+		// var_dump($facebook->getAccessToken());
+		
+		$offset += $limit;
 
-$friend_ids = array();
+		$friends_data = $facebook->api('/me/friends', 'GET', array(
+			'fields' => $fields,
+			'offset' => $offset,
+			'limit' => $limit
+		));
 
-// cache friends
-foreach($friends as $friend) {
-	
-	 array_push($friend_ids, $friend['id']);
-	
-	if (!$redis->hexists($users_hash, $cache_user_key_prefix.$friend['id'])) {
-		$redis->hset($users_hash, $cache_user_key_prefix.$friend['id'], json_encode($friend));
+		$friends = array_merge($friends, $friends_data['data']);
+		
+		$friend_ids = array_map(function ($friend) {
+			return $friend['id'];
+		}, $friends);
+		
+		foreach($friends as $friend) {
+			
+			// remove old entry
+			$ply_db->$users_hash->remove(array('id' => $friend['id']));
+			
+			// insert new entry
+			$ply_db->$users_hash->insert($friend);
+			
+			// update current logged in user's friends
+			$ply_db->$users_hash->update(array('id' => $fb_user_id),
+			   array(
+			     '$set' => array(
+						'friends' => $friend_ids,
+						'friends_updated' => time()
+					)
+			   )
+			);
+			
+			// cache friends
+			if (!$redis->hexists($users_hash, $cache_user_key_prefix.$friend['id'])) {
+				$redis->hset($users_hash, $cache_user_key_prefix.$friend['id'], json_encode($friend));
+			}
+		}
+		
+		// update friends entry for logged in user
+		$ply_db->$users_hash->update(array('id' => $fb_user_id),
+		   array(
+		     '$set' => array(
+					'friends' => $friend_ids,
+					'friends_updated' => time()
+				)
+		   )
+		);
 	}
 }
-var_dump(count($friends));
-var_dump(count($friend_ids));
-var_dump($friend_ids);
 
-$ply_db->$users_hash->update(array('id' => $fb_user_id ),
-   array(
-     '$set' => array('friends' => $friend_ids)
-   )
-);
-
-// todo: store friends
-//$ply_db->$users_hash->insert($fb_user);
-
-var_dump(':)');
-
-foreach ($redis->hgetall('fb_users') as $fb_user) {
-	$fb_user = json_decode($fb_user);
-	var_dump($fb_user);
-}
+// echo 'from redis:</br>';
+// foreach ($redis->hgetall('fb_users') as $fb_user) {
+// 	$fb_user = json_decode($fb_user);
+// 	var_dump($fb_user);
+// }
 
 die();
 
