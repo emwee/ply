@@ -1,0 +1,87 @@
+@import "compass/reset";
+@import "font-awesome";
+
+body {
+	font-family: 'Titillium Web', sans-serif;
+}
+
+.bar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	padding: 20px 20px 20px 35px;
+	color: #fff;
+	background-color: #f03333;
+}
+
+.bar-inner {
+	width: 940px;
+	margin: 0 auto;
+}
+
+.controls {
+	line-height: 40px;
+}
+
+.control {
+	cursor: pointer;
+	float: left;
+	padding-right: 10px;
+	text-shadow: 1px 1px 2px #666;
+}
+
+.control#toggle-video {
+	width: 50px;
+	font-size: 50px;
+	&:hover {
+		font-size: 55px;
+	}
+}
+
+.control.control-nav {
+	width: 30px;
+	font-size: 30px;
+	&:hover {
+		font-size: 35px;
+	}
+}
+
+.account {
+	float: right;
+	line-height: 30px;
+	text-shadow: 1px 1px 2px #666;
+}
+
+#main {
+	padding-top: 100px;
+}
+
+#player {
+	float: left;
+	margin-right: 20px;
+}
+
+#playlist {
+	float: left;
+	width: 400px;
+	font-size: 14px;
+}
+
+#playlist li {
+	line-height: 21px;
+}
+
+#playlist li .video {
+	cursor: pointer;
+	padding: 3px 6px;
+}
+
+#playlist li .video.active {
+	background-color: #ddd;
+}
+
+.container {
+	width: 940px;
+	margin: 0 auto;
+}

@@ -1,9 +1,9 @@
 define([
 	'jquery',
 	'backbone',
-	'collections/club',
+	'collections/videos',
 	'common'
-], function( $, Backbone, Club, Common ) {
+], function( $, Backbone, Videos, Common ) {
 
 	var Workspace = Backbone.Router.extend({
 		routes:{
