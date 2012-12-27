@@ -22,7 +22,7 @@ define([
 			'click #toggle-video'		: 'toggleVideo',
 			'click #next-video'			: 'nextVideo',
 			'click #prev-video'			: 'prevVideo',
-			'click #playlist .video'	: 'loadVideo',
+			'click #playlist .video'	: 'loadSelectedVideo',
 		},
 		
 		initialize: function () {	
@@ -31,10 +31,10 @@ define([
 			var self = this;
 			
 			function setupPlayer () {
-				console.log('---setupPlayer')
+				console.log('---setupPlayer');
 				Videos.fetch({
 					success: function(videos) {
-						console.log('done')
+						console.log('fetched videos')
 						videos.each(function(video, index) {
 							video.set({
 								'index': index
@@ -64,7 +64,7 @@ define([
 				};
 				*/
 				
-				(document.getElementsByTagName('head')[0] || document.documentElement).appendChild(s)
+				(document.getElementsByTagName('head')[0] || document.documentElement).appendChild(s);
 			}();
 		},
 		
@@ -76,7 +76,12 @@ define([
 			
 			Videos.each(this.addVideo, this);
 			
-			video_id = Videos.models[this.video_current].attributes.video_id
+			video_id = Videos.models[this.video_current].attributes.video_id;
+			
+			var bla = Videos.models[this.video_current];
+			
+			console.log('-----')
+			bla.markAsWatched();
 			
 			this.setActiveVideo();
 			
@@ -146,8 +151,8 @@ define([
 			this.player_state = state;
 		},
 		
-		loadVideo: function(e) {
-			console.log('load video');
+		loadSelectedVideo: function(e) {
+			console.log('loadSelectedVideo');
 			
 			var el;
 			
@@ -163,8 +168,6 @@ define([
 		},
 		
 		addVideo: function(video) {
-			console.log('--addVideo')
-			console.log(video)
 			var view = new VideoView({ model: video });
 			$("#playlist ul").append(view.render().el);
 		},

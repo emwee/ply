@@ -58,6 +58,15 @@ $app->get('/me/videos', function () use ($app, $usr) {
 	}
 });
 
+// mark as watched
+$app->post('/me/video/:id/watched', function ($id) use ($app, $usr) {
+	if ($app->request()->isAjax()) {
+		die($id);
+		$app->contentType('application/json');
+		echo json_encode($usr->getYouTubePosts());
+	}
+});
+
 $app->get('/home', function () use ($app) {
 	$app->render('home.mustache');
 });

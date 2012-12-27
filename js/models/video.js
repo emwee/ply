@@ -19,10 +19,6 @@ define([
 			}
 		},
 		
-		save: function() {
-			console.log('video.save');
-		},
-		
 		setVideoIdFromUrl: function() {
 			this.set({
 				video_id: this.getVideoIdByUrl(this.attributes.source)
@@ -39,6 +35,13 @@ define([
 			
 			// error
 			return url;
+		},
+		
+		markAsWatched: function() {
+			Backbone.sync('create', this, {
+				method: 'POST',
+				url: '/ply/me/video/' + this.attributes.id + '/watched'
+			});	
 		}
 	});
 	
