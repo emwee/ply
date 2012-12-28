@@ -38,6 +38,7 @@ define([
 		},
 		
 		markAsWatched: function() {
+			console.log('markAsWatched');
 			Backbone.sync('create', this, {
 				method: 'POST',
 				url: '/ply/me/video/' + this.attributes.id + '/watched'

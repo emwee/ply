@@ -76,21 +76,18 @@ define([
 			
 			Videos.each(this.addVideo, this);
 			
-			video_id = Videos.models[this.video_current].attributes.video_id;
-			
-			var bla = Videos.models[this.video_current];
-			
-			console.log('-----')
-			bla.markAsWatched();
-			
-			this.setActiveVideo();
+			var video = this.getCurrentVideo();
 			
 			self.player = new window.YT.Player('player', {
 				width: '480',
 				height: '360',
-				videoId: video_id,
+				videoId: video.attributes.id,
 				events: {
-					'onReady': this.onPlayerReady,
+					'onReady': function(event) {
+						video.markAsWatched();
+						self.setActiveVideo();
+						self.onPlayerReady(event);
+					},
 					'onStateChange': function(state)  {
 						self.onStateChange(state);
 					}
@@ -98,10 +95,19 @@ define([
 			});
 		},
 		
+		getCurrentVideo: function() {
+			return Videos.models[this.video_current];
+		},
+		
 		setActiveVideo: function() {
 			var index = this.video_current;
 			$("#playlist").find('.video.active').removeClass('active');
 			$("#playlist").find('.video').eq(index).addClass('active');
+		},
+		
+		markVideoAsWatched: function() {
+			console.log('markVideoAsWatched');
+			this.getCurrentVideo().markAsWatched();
 		},
 		
 		onPlayerReady: function(event) {
@@ -203,6 +209,7 @@ define([
 		loadVideoById: function(id) {
 			this.player.loadVideoById(id);
 			this.setActiveVideo();
+			this.markVideoAsWatched();
 		}
 	});
 	

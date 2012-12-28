@@ -4,8 +4,8 @@ error_reporting(E_ALL);
 
 require 'vendor/autoload.php';
 
-require 'class.User.php';
-require 'class.Video.php';
+require 'classes/class.User.php';
+require 'classes/class.Video.php';
 
 class MustacheView extends \Slim\View
 {
@@ -63,7 +63,6 @@ $app->get('/me/videos', function () use ($app, $usr) {
 // mark video as watched
 $app->post('/me/video/:id/watched', function ($id) use ($app, $usr, $video) {
 	if ($app->request()->isAjax()) {
-		
 		$video->markAsWatched($id, $usr->getUserId());
 		$app->contentType('application/json');
 		echo 'ok';
