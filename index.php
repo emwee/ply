@@ -4,7 +4,8 @@ error_reporting(E_ALL);
 
 require 'vendor/autoload.php';
 
-require 'foo.php';
+require 'class.User.php';
+require 'class.Video.php';
 
 class MustacheView extends \Slim\View
 {
@@ -26,6 +27,7 @@ $mongo = new Mongo('localhost');
 $mongodb = $mongo->ply;
 
 $usr = new User($redis, $mongodb);
+$video = new Video($mongodb);
 
 $app = new \Slim\Slim(array(
 	'view' => new MustacheView()
@@ -58,12 +60,13 @@ $app->get('/me/videos', function () use ($app, $usr) {
 	}
 });
 
-// mark as watched
-$app->post('/me/video/:id/watched', function ($id) use ($app, $usr) {
+// mark video as watched
+$app->post('/me/video/:id/watched', function ($id) use ($app, $usr, $video) {
 	if ($app->request()->isAjax()) {
-		die($id);
+		
+		$video->markAsWatched($id, $usr->getUserId());
 		$app->contentType('application/json');
-		echo json_encode($usr->getYouTubePosts());
+		echo 'ok';
 	}
 });
 

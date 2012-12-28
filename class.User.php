@@ -222,4 +222,9 @@ class User {
 			$this->fb->api('/me/permissions', 'delete');
 		}  
 	}
+	
+	
+	public function getUserId() {
+		return $this->fb_user_id;
+	}
 }
