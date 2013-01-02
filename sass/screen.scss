@@ -1,88 +1,116 @@
 @import "compass/reset";
-@import "font-awesome";
+@import "susy";
+
+$total-columns  : 12;
+$column-width   : 4em;
+$gutter-width   : 1em;
+$grid-padding   : $gutter-width;
+
+@import "compass/css3/box-shadow";
+@import "compass/css3/text-shadow";
 
 body {
 	font-family: 'Titillium Web', sans-serif;
+	font-size: 200%;
 }
 
-.bar {
+.page {
+	@include container;
+	
+	@include at-breakpoint(16) {
+		@include set-container-width;
+		#player {
+			@include span-columns(6);
+		}
+		
+		aside {
+			@include span-columns(10);
+			@include omega();
+		}
+		
+		font-size: .5em;
+		background-color: yellow !important;
+	}
+	
+	@include susy-grid-background;
+}
+
+header {
 	position: fixed;
 	top: 0;
 	left: 0;
 	right: 0;
-	padding: 20px 20px 20px 35px;
+	padding: 1em;
 	color: #fff;
-	box-shadow: 0px 3px 3px #ccc;
 	background-color: #f03333;
-}
-
-.bar-inner {
-	width: 940px;
-	margin: 0 auto;
-}
-
-.controls {
-	line-height: 40px;
-}
-
-.control {
-	cursor: pointer;
-	float: left;
-	padding-right: 10px;
-	text-shadow: 1px 1px 2px #666;
-}
-
-.control#toggle-video {
-	width: 50px;
-	font-size: 50px;
-	&:hover {
-		font-size: 55px;
+	@include box-shadow(#ccc 0px 3px 3px);
+	
+	.bar-inner {
+		@include container;
 	}
-}
-
-.control.control-nav {
-	width: 30px;
-	font-size: 30px;
-	&:hover {
-		font-size: 35px;
+	
+ 	nav {
+		@include span-columns(4);
+		margin-left: gutter();
+		line-height: 2.5em;
+		
+		.control {
+			cursor: pointer;
+			float: left;
+			padding-right: .625em;
+			@include text-shadow(#666 1px 1px 2px);
+		}
+		
+		.control#toggle-video {
+			font-size: 3em;
+			&:hover {
+				font-size: 3.5em;
+			}
+		}
+		
+		.control.control-nav {
+			font-size: 2em;
+			&:hover {
+				font-size: 2.5em;
+			}
+		}
 	}
-}
-
-.account {
-	float: right;
-	line-height: 30px;
-	text-shadow: 1px 1px 2px #666;
+	
+	#account {
+		@include prefix(1);
+		@include span-columns(3);
+		@include omega();
+		line-height: 35px;
+		text-align: right;
+		@include text-shadow(#666 1px 1px 2px);
+	}
 }
 
 #main {
-	padding-top: 100px;
+	padding-top: 6em;
 }
 
-#player {
-	float: left;
-	margin-right: 20px;
+#player,
+aside {
+	@include span-columns(12);
 }
 
-#playlist {
-	float: left;
-	width: 400px;
-	font-size: 14px;
+aside {
+	
+	@include omega();
+	
+	li {
+		line-height: 1.5em;
+	}
+	
+	li .video {
+		cursor: pointer;
+		padding: 3px 6px;
+	}
+	
+	li .video.active {
+		background-color: #ddd;
+	}
 }
 
-#playlist li {
-	line-height: 21px;
-}
-
-#playlist li .video {
-	cursor: pointer;
-	padding: 3px 6px;
-}
-
-#playlist li .video.active {
-	background-color: #ddd;
-}
-
-.container {
-	width: 940px;
-	margin: 0 auto;
-}
+@import "font-awesome";

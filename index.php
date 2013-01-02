@@ -53,7 +53,6 @@ $app->get('/me/revoke_fb_permissions', function () use ($app, $usr) {
 });
 
 $app->get('/me/videos', function () use ($app, $usr) {
-	
 	if ($app->request()->isAjax()) {
 		$app->contentType('application/json');
 		echo json_encode($usr->getYouTubePosts());

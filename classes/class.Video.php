@@ -12,7 +12,7 @@ class Video {
 		
 		$user = $this->mongo->fb_users->findOne(array('id' => $user_id));
 		
-		if (!array_key_exists('watched', $user)) {
+		if (!$user) {
 			$watched_videos = array($video_id);
 		}
 		else {
