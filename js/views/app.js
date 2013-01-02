@@ -103,8 +103,8 @@ define([
 			var video = this.getCurrentVideo();
 			
 			self.player = new window.YT.Player('player', {
-				width: '480',
-				height: '360',
+				width: '300',
+				height: '225',
 				videoId: video.attributes.id,
 				events: {
 					'onReady': function(event) {
@@ -177,7 +177,7 @@ define([
 			console.log('updateToggleButton');
 			console.log(state);
 			var current_state = this.player_state;
-			$('#toggle-video').removeClass('icon-' + current_state).addClass('icon-' + state);
+			$('#toggle-video span').removeClass('icon-' + current_state).addClass('icon-' + state);
 			this.player_state = state;
 		},
 		
