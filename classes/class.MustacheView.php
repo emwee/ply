@@ -1,0 +1,16 @@
+<?php
+
+class MustacheView extends \Slim\View
+{
+	public function render($template)
+	{
+		$m = new \Mustache_Engine;
+		$m->setPartialsLoader(new \Mustache_Loader_FilesystemLoader('templates'));
+		$m->addHelper('test', function($text) {
+			return 'test!';
+		});
+					
+		$contents = file_get_contents($this->getTemplatesDirectory() . '/' . ltrim($template, '/'));
+		return $m->render($contents, $this->data);
+    }
+}

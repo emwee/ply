@@ -4,13 +4,13 @@ define([
 ], function( _, Backbone ) {
 	
 	var Video = Backbone.Model.extend({
-		defaults: {
-			status: "...",
-		},
+		defaults: {},
 		
 		initialize: function() {
 			console.log('video.init');
-			this.setVideoIdFromUrl();
+			this.set({
+				video_id: this.getVideoIdByUrl(this.attributes.source)
+			});
 		},
 		
 		validate: function(attributes) {
@@ -20,9 +20,7 @@ define([
 		},
 		
 		setVideoIdFromUrl: function() {
-			this.set({
-				video_id: this.getVideoIdByUrl(this.attributes.source)
-			})
+			
 		},
 		
 		getVideoIdByUrl: function(url) {	

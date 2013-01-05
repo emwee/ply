@@ -9,5 +9,9 @@ define([
 		url: '/ply/me/videos'
 	});
 	
-	return new Videos;
+	var bla = new Videos;
+	
+	window.bla  = bla;
+	
+	return bla;
 });

@@ -2,78 +2,102 @@
 
 error_reporting(E_ALL);
 
+function dump($obj) {
+	echo '<pre>';
+	var_dump($obj);
+	echo '</pre>';
+}
+
 require 'vendor/autoload.php';
 
 require 'classes/class.User.php';
 require 'classes/class.Video.php';
-
-class MustacheView extends \Slim\View
-{
-	public function render($template)
-	{
-		$m = new \Mustache_Engine;
-		$m->setPartialsLoader(new \Mustache_Loader_FilesystemLoader('templates'));
-		$m->addHelper('test', function($text) {
-			return 'test!';
-		});
-					
-		$contents = file_get_contents($this->getTemplatesDirectory() . '/' . ltrim($template, '/'));
-		return $m->render($contents, $this->data);
-    }
-}
+require 'classes/class.MustacheView.php';
 
 $redis = new Predis\Client('tcp://localhost:6379');
 $mongo = new Mongo('localhost');
 $mongodb = $mongo->ply;
 
-$usr = new User($redis, $mongodb);
-$video = new Video($mongodb);
+$fb = new Facebook(array(
+  'appId'  => '119834638185495',
+  'secret' => '24fe3107c9510cce4dc9ca84155d6483',
+));
+
+$user = new User($redis, $mongodb, $fb);
+$user->setAuthUserId($fb->getUser());
+$video = new Video($redis, $mongodb);
 
 $app = new \Slim\Slim(array(
 	'view' => new MustacheView()
 ));
 
-$app->get('/me/profile', function () use ($app, $usr) {
+$app->notFound(function() use ($app) {
 	
-	if ($usr->isLoggedIn()) {
-		echo $usr->getLogoutUrl();
-		echo '<pre>';
-		var_dump($usr->getUserData());
-		$friends = $usr->getFriends();
+  	$app->render('404.mustache');
+});
+
+$app->get('/home', function() use ($app) {
+	
+	$app->render('home.mustache');
+});
+
+$app->get('/me/profile', function() use ($app, $user, $fb) {
+	
+	echo '<p>'.$fb->getAccessToken().'</p>';
+	echo '<p>'.$fb->getUser().'</p>';
+	
+	if ($user->isAuthenticated()) {
+		echo 'logged in<br />';
+		echo $user->getLogoutUrl();
+		dump($user->getProfile());
 	}
 	else {
-		echo $usr->getLoginUrl();
+		echo 'logged out<br />';
+		echo $user->getLoginUrl();
 	}
 });
 
-$app->get('/me/revoke_fb_permissions', function () use ($app, $usr) {
-	if (!$usr->isLoggedIn()) {
-		$usr->revokePermissions();
+$app->get('/me/revoke_fb_permissions', function() use ($app, $user) {
+	
+	if (!$user->isAuthenticated()) {
+		$user->revokePermissions();
 	}
 });
 
-$app->get('/me/videos', function () use ($app, $usr) {
+$app->get('/me/friends', function() use ($app, $user) {
+	
+	$friends = $user->getFriends();
+	dump(count($friends));
+	dump($friends);
+	die();
+	
 	if ($app->request()->isAjax()) {
 		$app->contentType('application/json');
-		echo json_encode($usr->getYouTubePosts());
+		echo $friends;
 	}
 });
 
-// mark video as watched
-$app->post('/me/video/:id/watched', function ($id) use ($app, $usr, $video) {
+$app->get('/me/videos', function() use ($app, $user) {
+	$feed = $user->getFeed();
+	
 	if ($app->request()->isAjax()) {
-		$video->markAsWatched($id, $usr->getUserId());
+		$app->contentType('application/json');
+		echo json_encode($feed, true);
+	}
+});
+
+// marks given video as watched
+$app->post('/me/video/:id/watched', function ($id) use ($app, $user, $video) {
+	
+	if ($app->request()->isAjax()) {
+		$video->markAsWatched($id, $user->getAuthUserId());
 		$app->contentType('application/json');
 		echo 'ok';
 	}
 });
 
-$app->get('/home', function () use ($app) {
-	$app->render('home.mustache');
-});
-
-$app->notFound(function () use ($app) {
-    echo '404';
-});
+require_once('fetch_profile.php');
+require_once('fetch_friends.php');
+require_once('fetch_videos.php');
 
 $app->run();

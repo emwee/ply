@@ -1,0 +1,61 @@
+= MongoDB =
+
+== Collections ==
+
+fb_users        Facebook profiles
+yt_entries      Wall entries that contain YouTube Links
+
+fb_users
+    <facebook prfile data>
+    friends             : array of fb user id's
+    friends_updated     : timestamp last fetched
+    yt_entries          : array of fb post id's
+    yt_entries_updated  : timestamp last fetched
+
+yt_entries
+    <facebook entry data>
+
+= Redis (Cache) =
+
+== Hashes ==
+
+fb_users    fb_user:<fb_user_id>        Facebook profile (json)
+yt_entries  yt_entry:<yt_entry_id>      Facebook YouTube post (json) ????
+yt_entries  yt_entry:<fb_user_id>       Facebook YouTube post (json)
+
+== Keys ==
+
+fb_friends:<fb_user_id>     Facebook friends
+feed:<fb_user_id>           YouTube entries posted by friends of given user
+
+
+= URL's =
+
+/feed
+/feed/?p=[:page]
+
+/video/[:entry_id]
+
+/user/[:friend_id]
+/user/[:friend_id]/videos
+/user/[:friend_id]/video/[:entry_id]
+
+== Responses ==
+
+/feed/?p=[:page]
+
+{
+    {
+        entry_id: 123
+        url: /videos/345
+        yt_code: GHjgh89hj
+        user: {
+            id: 
+            username
+            name
+            url: 
+            fb_url:
+        }
+    }
+}
+
