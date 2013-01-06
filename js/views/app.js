@@ -27,90 +27,62 @@ define([
 		
 		initialize: function () {	
 			console.log('--init app');
-			
 			var self = this;
 			
-			function setupPlayer () {
-				console.log('---setupPlayer');
-				Videos.fetch({
-					success: function(videos) {
-						console.log('fetched videos')
-						videos.each(function(video, index) {
-							video.set({
-								'index': index
-							});
-						});
-						
-						
-						
-						self.addAll();
-					}
-				});
-				
-				/*
-				if (!Modernizr.input.placeholder) {
-					$('[placeholder]').focus(function () {
-					    var input = $(this);
-					    if (input.val() == input.attr('placeholder')) {
-					        input.val('');
-					        input.removeClass('placeholder');
-					    }
-					}).blur(function () {
-					    var input = $(this);
-					    if (input.val() == '' || input.val() == input.attr('placeholder')) {
-					        input.addClass('placeholder');
-					        input.val(input.attr('placeholder'));
-					    }
-					}).blur();
-					$('[placeholder]').parents('form').submit(function () {
-					    $(this).find('[placeholder]').each(function () {
-					        var input = $(this);
-					        if (input.val() == input.attr('placeholder')) {
-					            input.val('');
-					        }
-					    })
-					});
-				}
-				*/
-			}
-			
-			window.onYouTubePlayerAPIReady = function() {
-				setupPlayer();
-			}
-			
-			window.YT && setupPlayer() || function() {
+			window.YT && this.fetchVideos() || function() {
 				var s = document.createElement('script');
 				s.setAttribute('type', 'text/javascript');
 				s.setAttribute('src', 'http://www.youtube.com/player_api?enablejsapi=1&version=3');
 				(document.getElementsByTagName('head')[0] || document.documentElement).appendChild(s);
 			}();
+
+			window.onYouTubePlayerAPIReady = function() {
+				self.fetchVideos();
+			}
+			
+			function setupPlayer () {
+				console.log('---setupPlayer');
+			}
 		},
 		
-		addAll: function() {
-			console.log('--addAll')
-			console.log(Videos.length)
+		fetchVideos: function() {
 			
-			var self = this, video_id;
+			var self = this;
 			
-			Videos.each(this.addVideo, this);
-			
-			var video = this.getCurrentVideo();
-			
-			self.player = new window.YT.Player('player', {
-				width: '300',
-				height: '225',
-				videoId: video.attributes.video_id,
-				events: {
-					'onReady': function(event) {
-						video.markAsWatched();
-						self.setActiveVideo();
-						self.onPlayerReady(event);
-					},
-					'onStateChange': function(state)  {
-						self.onStateChange(state);
-					}
+			Videos.fetch({
+				success: function(videos) {
+					videos.each(function(video, index) {
+						video.set({
+							'index': index
+						});
+						
+						self.addVideo(video);
+					});
+					
+					var first_video = self.getCurrentVideo();
+
+					self.player = new window.YT.Player('player', {
+						width: '300',
+						height: '225',
+						videoId: first_video.attributes.video_id,
+						events: {
+							'onReady': function(event) {
+								first_video.markAsWatched();
+								self.setActiveVideo();
+								self.onPlayerReady(event);
+							},
+							'onStateChange': function(state)  {
+								self.onStateChange(state);
+							}
+						}
+					});
 				}
 			});
+		},
+		
+		addVideo: function(video) {
+			var view = new VideoView({ model: video });
+			$("#playlist ul").append(view.render().el);
 		},
 		
 		getCurrentVideo: function() {
@@ -130,7 +102,7 @@ define([
 		
 		onPlayerReady: function(event) {
 			console.log('onPlayerReady')
-			console.log(event)
+			console.log(event);
 		},
 		
 		onStateChange: function(state) {
@@ -139,14 +111,11 @@ define([
 			
 			if (state.data == YT.PlayerState.BUFFERING) {
 				this.updateToggleButton('pause');
-			}
-			else if (state.data == YT.PlayerState.PLAYING) {
+			} else if (state.data == YT.PlayerState.PLAYING) {
 				this.updateToggleButton('pause');
-			}
-			else if (state.data == YT.PlayerState.PAUSED) {
+			} else if (state.data == YT.PlayerState.PAUSED) {
 				this.updateToggleButton('play');
-			}
-			else if (state.data == YT.PlayerState.ENDED) {
+			} else if (state.data == YT.PlayerState.ENDED) {
 				this.updateToggleButton('stop');
 				this.nextVideo();
 			}
@@ -159,8 +128,7 @@ define([
 				if (this.player_state != 'play') {
 					this.updateToggleButton('play');
 					this.player.pauseVideo();
-				}
-				else {
+				} else {
 					this.updateToggleButton('pause');
 					this.player.playVideo();
 				}
@@ -168,60 +136,56 @@ define([
 		},
 		
 		updateToggleButton: function(state) {
-			console.log('updateToggleButton');
-			console.log(state);
 			var current_state = this.player_state;
-			$('#toggle-video span').removeClass('icon-' + current_state).addClass('icon-' + state);
+			
+			$('#toggle-video span')
+				.removeClass('icon-' + current_state)
+				.addClass('icon-' + state)
+			;
+			
 			this.player_state = state;
 		},
 		
 		loadSelectedVideo: function(e) {
-			console.log('loadSelectedVideo');
-			
-			var el;
+			var video_el;
 			
 			if ($(e.target).is('.video')) {
-				el = $(e.target);
-			}
-			else {
-				el = $(e.target).parents('.video');
+				video_el = $(e.target);
+			} else {
+				video_el = $(e.target).parents('.video');
 			}
 			
-			this.video_current = el.data('index');
-			this.loadVideoById(el.data('video-id'));
+			this.video_current = video_el.data('index');
+			this.loadVideoById(video_el.data('video-id'));
 			this.player.pauseVideo();
 		},
 		
-		addVideo: function(video) {
-			var view = new VideoView({ model: video });
-			$("#playlist ul").append(view.render().el);
-		},
-		
 		nextVideo: function() {
-			var self = this, video_url;
-			
-			if (this.video_current == Videos.length - 1) {
-				this.video_current = 0
-			}
-			else {
-				this.video_current++;
-			}
-			
-			video_id = Videos.models[this.video_current].attributes.video_id;
-			this.loadVideoById(video_id);
+			this.loadVideoByDirection('next');
 		},
 		
 		prevVideo: function() {
-			var self = this, video_url;
+			this.loadVideoByDirection('prev');
+		},
+		
+		loadVideoByDirection: function(direction) {
 			
-			if (this.video_current == 0) {
-				this.video_current = Videos.length - 1;
+			if (direction == 'next') {
+				if (this.video_current == Videos.length - 1) {
+					this.video_current = 0
+				} else {
+					this.video_current++;
+				}
 			}
-			else {
-				this.video_current--;
+			else if (direction == 'prev') {
+				if (this.video_current == 0) {
+					this.video_current = Videos.length - 1;
+				} else {
+					this.video_current--;
+				}
 			}
 			
-			video_id = Videos.models[this.video_current].attributes.video_id;
+			var video_id = Videos.models[this.video_current].attributes.video_id;
 			this.loadVideoById(video_id);
 		},
 		
