@@ -4,7 +4,9 @@ define([
 ], function( _, Backbone ) {
 	
 	var Video = Backbone.Model.extend({
-		defaults: {},
+		defaults: {
+			'active': false
+		},
 		
 		initialize: function() {
 			console.log('video.init');
@@ -17,10 +19,6 @@ define([
 			if (attributes.name == '') {
 				return { name: 'Name '};
 			}
-		},
-		
-		setVideoIdFromUrl: function() {
-			
 		},
 		
 		getVideoIdByUrl: function(url) {	

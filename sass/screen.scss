@@ -25,7 +25,7 @@ body {
 		}
 	}
 	
-	@include susy-grid-background;
+	// @include susy-grid-background;
 }
 
 header {
@@ -83,6 +83,7 @@ header {
 
 #player {
 	@include span-columns(7);
+	@include box-shadow(red 6px 6px 0px);
 }
 
 #playlist {
@@ -97,6 +98,7 @@ header {
 	}
 
 	li .video.active {
-		background-color: #ddd;
+		color: #fff;
+		background-color: red;
 	}
 }

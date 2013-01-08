@@ -6,17 +6,16 @@ define([
 ], function( $, Backbone, Videos, Common ) {
 
 	var Workspace = Backbone.Router.extend({
-		routes:{
-			'*filter': 'setFilter'
+		
+		routes: {
+			
+			'video/:video_id': 'loadVideo',
 		},
 		
-		setFilter: function( param ) {
-			// Set the current filter to be used
-			Common.TodoFilter = param.trim() || '';
-
-			// Trigger a collection filter event, causing hiding/unhiding
-			// of the Todo view items
-			//Club.trigger('filter');
+		loadVideo: function(video_id) {
+			//console.log('router:loadVideo');
+			//console.log(video_id);
+			//Videos.setBla(video_id);
 		}
 	});
 

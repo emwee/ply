@@ -766,21 +766,7 @@ body {
   padding-left: 0.65em;
   padding-right: 0.65em;
   margin-left: auto;
-  margin-right: auto;
-  background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(0, 0, 0, 0)), color-stop(0%, rgba(100, 100, 225, 0.25)), color-stop(11.76471%, rgba(100, 100, 225, 0.25)), color-stop(11.76471%, rgba(0, 0, 0, 0)), color-stop(14.70588%, rgba(0, 0, 0, 0)), color-stop(14.70588%, rgba(100, 100, 225, 0.25)), color-stop(26.47059%, rgba(100, 100, 225, 0.25)), color-stop(26.47059%, rgba(0, 0, 0, 0)), color-stop(29.41176%, rgba(0, 0, 0, 0)), color-stop(29.41176%, rgba(100, 100, 225, 0.25)), color-stop(41.17647%, rgba(100, 100, 225, 0.25)), color-stop(41.17647%, rgba(0, 0, 0, 0)), color-stop(44.11765%, rgba(0, 0, 0, 0)), color-stop(44.11765%, rgba(100, 100, 225, 0.25)), color-stop(55.88235%, rgba(100, 100, 225, 0.25)), color-stop(55.88235%, rgba(0, 0, 0, 0)), color-stop(58.82353%, rgba(0, 0, 0, 0)), color-stop(58.82353%, rgba(100, 100, 225, 0.25)), color-stop(70.58824%, rgba(100, 100, 225, 0.25)), color-stop(70.58824%, rgba(0, 0, 0, 0)), color-stop(73.52941%, rgba(0, 0, 0, 0)), color-stop(73.52941%, rgba(100, 100, 225, 0.25)), color-stop(85.29412%, rgba(100, 100, 225, 0.25)), color-stop(85.29412%, rgba(0, 0, 0, 0)), color-stop(88.23529%, rgba(0, 0, 0, 0)), color-stop(88.23529%, rgba(100, 100, 225, 0.25)), color-stop(100%, rgba(100, 100, 225, 0.25)), color-stop(100%, rgba(0, 0, 0, 0)), color-stop(100%, rgba(0, 0, 0, 0)));
-  background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0) 0%, rgba(100, 100, 225, 0.25) 0%, rgba(100, 100, 225, 0.25) 11.76471%, rgba(0, 0, 0, 0) 11.76471%, rgba(0, 0, 0, 0) 14.70588%, rgba(100, 100, 225, 0.25) 14.70588%, rgba(100, 100, 225, 0.25) 26.47059%, rgba(0, 0, 0, 0) 26.47059%, rgba(0, 0, 0, 0) 29.41176%, rgba(100, 100, 225, 0.25) 29.41176%, rgba(100, 100, 225, 0.25) 41.17647%, rgba(0, 0, 0, 0) 41.17647%, rgba(0, 0, 0, 0) 44.11765%, rgba(100, 100, 225, 0.25) 44.11765%, rgba(100, 100, 225, 0.25) 55.88235%, rgba(0, 0, 0, 0) 55.88235%, rgba(0, 0, 0, 0) 58.82353%, rgba(100, 100, 225, 0.25) 58.82353%, rgba(100, 100, 225, 0.25) 70.58824%, rgba(0, 0, 0, 0) 70.58824%, rgba(0, 0, 0, 0) 73.52941%, rgba(100, 100, 225, 0.25) 73.52941%, rgba(100, 100, 225, 0.25) 85.29412%, rgba(0, 0, 0, 0) 85.29412%, rgba(0, 0, 0, 0) 88.23529%, rgba(100, 100, 225, 0.25) 88.23529%, rgba(100, 100, 225, 0.25) 100%, rgba(0, 0, 0, 0) 100%, rgba(0, 0, 0, 0) 100%);
-  background-image: -moz-linear-gradient(left, rgba(0, 0, 0, 0) 0%, rgba(100, 100, 225, 0.25) 0%, rgba(100, 100, 225, 0.25) 11.76471%, rgba(0, 0, 0, 0) 11.76471%, rgba(0, 0, 0, 0) 14.70588%, rgba(100, 100, 225, 0.25) 14.70588%, rgba(100, 100, 225, 0.25) 26.47059%, rgba(0, 0, 0, 0) 26.47059%, rgba(0, 0, 0, 0) 29.41176%, rgba(100, 100, 225, 0.25) 29.41176%, rgba(100, 100, 225, 0.25) 41.17647%, rgba(0, 0, 0, 0) 41.17647%, rgba(0, 0, 0, 0) 44.11765%, rgba(100, 100, 225, 0.25) 44.11765%, rgba(100, 100, 225, 0.25) 55.88235%, rgba(0, 0, 0, 0) 55.88235%, rgba(0, 0, 0, 0) 58.82353%, rgba(100, 100, 225, 0.25) 58.82353%, rgba(100, 100, 225, 0.25) 70.58824%, rgba(0, 0, 0, 0) 70.58824%, rgba(0, 0, 0, 0) 73.52941%, rgba(100, 100, 225, 0.25) 73.52941%, rgba(100, 100, 225, 0.25) 85.29412%, rgba(0, 0, 0, 0) 85.29412%, rgba(0, 0, 0, 0) 88.23529%, rgba(100, 100, 225, 0.25) 88.23529%, rgba(100, 100, 225, 0.25) 100%, rgba(0, 0, 0, 0) 100%, rgba(0, 0, 0, 0) 100%);
-  background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0) 0%, rgba(100, 100, 225, 0.25) 0%, rgba(100, 100, 225, 0.25) 11.76471%, rgba(0, 0, 0, 0) 11.76471%, rgba(0, 0, 0, 0) 14.70588%, rgba(100, 100, 225, 0.25) 14.70588%, rgba(100, 100, 225, 0.25) 26.47059%, rgba(0, 0, 0, 0) 26.47059%, rgba(0, 0, 0, 0) 29.41176%, rgba(100, 100, 225, 0.25) 29.41176%, rgba(100, 100, 225, 0.25) 41.17647%, rgba(0, 0, 0, 0) 41.17647%, rgba(0, 0, 0, 0) 44.11765%, rgba(100, 100, 225, 0.25) 44.11765%, rgba(100, 100, 225, 0.25) 55.88235%, rgba(0, 0, 0, 0) 55.88235%, rgba(0, 0, 0, 0) 58.82353%, rgba(100, 100, 225, 0.25) 58.82353%, rgba(100, 100, 225, 0.25) 70.58824%, rgba(0, 0, 0, 0) 70.58824%, rgba(0, 0, 0, 0) 73.52941%, rgba(100, 100, 225, 0.25) 73.52941%, rgba(100, 100, 225, 0.25) 85.29412%, rgba(0, 0, 0, 0) 85.29412%, rgba(0, 0, 0, 0) 88.23529%, rgba(100, 100, 225, 0.25) 88.23529%, rgba(100, 100, 225, 0.25) 100%, rgba(0, 0, 0, 0) 100%, rgba(0, 0, 0, 0) 100%);
-  background-image: linear-gradient(left, rgba(0, 0, 0, 0) 0%, rgba(100, 100, 225, 0.25) 0%, rgba(100, 100, 225, 0.25) 11.76471%, rgba(0, 0, 0, 0) 11.76471%, rgba(0, 0, 0, 0) 14.70588%, rgba(100, 100, 225, 0.25) 14.70588%, rgba(100, 100, 225, 0.25) 26.47059%, rgba(0, 0, 0, 0) 26.47059%, rgba(0, 0, 0, 0) 29.41176%, rgba(100, 100, 225, 0.25) 29.41176%, rgba(100, 100, 225, 0.25) 41.17647%, rgba(0, 0, 0, 0) 41.17647%, rgba(0, 0, 0, 0) 44.11765%, rgba(100, 100, 225, 0.25) 44.11765%, rgba(100, 100, 225, 0.25) 55.88235%, rgba(0, 0, 0, 0) 55.88235%, rgba(0, 0, 0, 0) 58.82353%, rgba(100, 100, 225, 0.25) 58.82353%, rgba(100, 100, 225, 0.25) 70.58824%, rgba(0, 0, 0, 0) 70.58824%, rgba(0, 0, 0, 0) 73.52941%, rgba(100, 100, 225, 0.25) 73.52941%, rgba(100, 100, 225, 0.25) 85.29412%, rgba(0, 0, 0, 0) 85.29412%, rgba(0, 0, 0, 0) 88.23529%, rgba(100, 100, 225, 0.25) 88.23529%, rgba(100, 100, 225, 0.25) 100%, rgba(0, 0, 0, 0) 100%, rgba(0, 0, 0, 0) 100%);
-  background-position: left top;
-  -webkit-background-origin: content;
-  -moz-background-origin: content;
-  -ms-background-origin: content-box;
-  -o-background-origin: content-box;
-  background-origin: content-box;
-  -webkit-background-clip: content-box;
-  -moz-background-clip: content-box;
-  background-clip: content-box; }
+  margin-right: auto; }
   .page:after {
     content: "";
     display: table;
@@ -849,7 +835,10 @@ header {
   width: 100%;
   float: left;
   margin-right: 2.94118%;
-  display: inline; }
+  display: inline;
+  -webkit-box-shadow: red 6px 6px 0px;
+  -moz-box-shadow: red 6px 6px 0px;
+  box-shadow: red 6px 6px 0px; }
 
 #playlist li {
   line-height: 1.5em; }
@@ -857,4 +846,5 @@ header {
   cursor: pointer;
   padding: 3px 6px; }
 #playlist li .video.active {
-  background-color: #ddd; }
+  color: #fff;
+  background-color: red; }

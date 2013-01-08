@@ -1,3 +1,5 @@
-<div class='video' data-video-id="<%= video_id %>" data-index="<%= index %>">
-	<p><%= name %> by <%= user.username %> <%= user.first_name %></p>
+<div class='video <% if (active) { %>active<% } %>' data-video-id="<%= video_id %>" data-index="<%= index %>">
+	<p>
+		<%= name %> by <%= user.username %> <%= user.first_name %>
+	</p>
 </div>
