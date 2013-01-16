@@ -4,10 +4,10 @@ define([
 	'backbone',
 	'models/video',
 	'collections/videos',
+	'views/video_list',
 	'views/video',
-	'routers/router',
-	'common'
-], function($, _, Backbone, Video, Videos, VideoView, Workspace, Common) {
+	'routers/router'
+], function($, _, Backbone, Video, Videos, VideoListView, VideoView, Workspace) {
 
 	var AppView = Backbone.View.extend({
 		
@@ -18,6 +18,8 @@ define([
 		player_state: -1,
 		
 		video_current: 0,
+		
+		viewList: null,
 		
 		events: {
 			'click #toggle-video'		: 'toggleVideo',
@@ -47,53 +49,37 @@ define([
 			
 			Videos.fetch({
 				success: function(videos) {
-					videos.each(function(video, index) {
-						video.set({
-							'index': index
-						});
-						
-						self.addVideo(video);
+					
+					self.videoViewList = new VideoListView({
+						collection: videos,
+						el: $('#playlist ul')
 					});
 					
-					var first_video = self.getCurrentVideo();
-					
-					console.log(Videos.getActive())
-
-					self.player = new window.YT.Player('player', {
-						width: '300',
-						height: '225',
-						videoId: first_video.attributes.video_id,
-						events: {
-							'onReady': function(event) {
-								first_video.markAsWatched();
-								first_video.set('active', true);
-								self.onPlayerReady(event);
-							},
-							'onStateChange': function(state)  {
-								self.onStateChange(state);
-							}
-						}
-					});
+					// var first_video = self.getCurrentVideo();
+					// 
+					// console.log(Videos.getActive())
+					// 
+					// self.player = new window.YT.Player('player', {
+					// 	width: '300',
+					// 	height: '225',
+					// 	videoId: first_video.attributes.video_id,
+					// 	events: {
+					// 		'onReady': function(event) {
+					// 			first_video.markAsWatched();
+					// 			first_video.set('active', true);
+					// 			self.onPlayerReady(event);
+					// 		},
+					// 		'onStateChange': function(state)  {
+					// 			self.onStateChange(state);
+					// 		}
+					// 	}
+					// });
 				}
 			});
-			
-			Videos.bind('change:active', function(video) {
-				self.loadVideoById(video.attributes.video_id);
-			});
-		},
-		
-		render: function() {
-			console.log('App render');
-			return this;
-		},
-		
-		addVideo: function(video) {
-			var view = new VideoView({
-				model: video,
-				router: this.options.router,
-			});
-			
-			$("#playlist ul").append(view.render().el);
+			// 
+			// Videos.bind('change:active', function(video) {
+			// 	self.loadVideoById(video.attributes.video_id);
+			// });
 		},
 		
 		getCurrentVideo: function() {
