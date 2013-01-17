@@ -14,15 +14,14 @@ define([
 		
 		el: $("#app"),
 		
-		player: null,
-		
 		player_state: -1,
-		
-		video_current: 0,
 		
 		initialize: function () {	
 			console.log('--init app');
 			var self = this;
+			
+			Ply = {};
+			Ply.evt = _.extend({}, Backbone.Events);
 			
 			var player_view = new PlayerView()
 			
@@ -31,11 +30,12 @@ define([
 					
 					self.videoViewList = new VideoListView({
 						collection: videos,
-						player_view: player_view,
 						el: $('#playlist ul')
 					});
 					
-					player_view.render(videos.models[0].attributes.video_id);
+					player_view.render(
+						videos.models[0].get('video_id')
+					);
 					
 					self.videoViewList.render();
 				}
@@ -111,11 +111,6 @@ define([
 			}
 			video = this.getCurrentVideo();
 			this.loadVideoById(video.attributes.video_id);
-		},
-		
-		loadVideoById: function(id) {
-			this.player.loadVideoById(id);
-			this.player.pauseVideo();
 		}
 	});
 	

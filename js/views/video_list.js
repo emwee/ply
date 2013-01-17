@@ -21,12 +21,12 @@ define([
 			this.active_video = null;
 			
 			// create an array of video views to keep track of children
-			this.video_views = [];
+			this.video_item_views = [];
 			
 			// add videos to the view
 			this.collection.each(this.add);
 			
-			this.setActiveVideo(
+			this.setActive(
 				this.collection.models[0]
 			);
 		},
@@ -41,7 +41,7 @@ define([
 			this.video_item_views.push(video_item_view);
 		},
 		
-		setActiveVideo: function(video) {
+		setActive: function(video) {
 			
 			// deactivate current active video
 			if (this.active_video) {
@@ -66,11 +66,9 @@ define([
 			
 			video.markAsWatched();
 			
-			this.setActiveVideo(video);
+			this.setActive(video);
 			
-			this.options.player_view.playVideoById(
-				video.get('video_id')
-			);
+			Ply.evt.trigger('ply:playVideo', video.get('video_id'));
 		},
 		
 		render: function () {
@@ -78,7 +76,7 @@ define([
 			
 			var self = this;
 			
-			_(this.video_views).each(function(video_view) {
+			_(this.video_item_views).each(function(video_view) {
 				$(self.el).append(video_view.render().el);
 			});
 			

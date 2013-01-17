@@ -9,9 +9,13 @@ define([
 		initialize: function() {
 			console.log('--PlayerView init');
 			
+			var self = this;
+			
 			this.player = null;
 			
-			this.bla = null;
+			Ply.evt.on('ply:playVideo', function(video_id) {
+			  self.playVideoById(video_id);
+			});
 		},
 		
 		render: function (video_id) {
@@ -28,8 +32,6 @@ define([
 			
 			window.onYouTubePlayerAPIReady = function() {
 				console.log('--onYouTubePlayerAPIReady');
-				console.log(this);
-				
 				
 				self.player = new window.YT.Player('player', {
 					width: '300',
@@ -71,9 +73,6 @@ define([
 		
 		playVideoById: function(id) {
 			console.log('--playVideoById');
-			console.log(id);
-			console.log(this);
-			
 			this.player.loadVideoById(id);
 			this.player.pauseVideo();
 		}
