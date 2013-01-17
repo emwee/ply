@@ -4,10 +4,11 @@ define([
 	'backbone',
 	'models/video',
 	'collections/videos',
+	'views/player',
+	'views/player_controls',
 	'views/video_list',
-	'views/video',
 	'routers/router'
-], function($, _, Backbone, Video, Videos, VideoListView, VideoView, Workspace) {
+], function($, _, Backbone, Video, Videos, PlayerView, PlayerControlsView, VideoListView, Workspace) {
 
 	var AppView = Backbone.View.extend({
 		
@@ -19,88 +20,30 @@ define([
 		
 		video_current: 0,
 		
-		viewList: null,
-		
-		events: {
-			'click #toggle-video'		: 'toggleVideo',
-			'click #next-video'			: 'nextVideo',
-			'click #prev-video'			: 'prevVideo',
-		},
-		
 		initialize: function () {	
 			console.log('--init app');
 			var self = this;
 			
-			window.YT && this.fetchVideos() || function() {
-				var s = document.createElement('script');
-				s.setAttribute('type', 'text/javascript');
-				s.setAttribute('src', 'http://www.youtube.com/player_api?enablejsapi=1&version=3');
-				(document.getElementsByTagName('head')[0] || document.documentElement).appendChild(s);
-			}();
-
-			window.onYouTubePlayerAPIReady = function() {
-				self.fetchVideos();
-			}
-		},
-		
-		fetchVideos: function() {
-			
-			var self = this;
+			var player_view = new PlayerView()
 			
 			Videos.fetch({
 				success: function(videos) {
 					
 					self.videoViewList = new VideoListView({
 						collection: videos,
+						player_view: player_view,
 						el: $('#playlist ul')
 					});
 					
-					// var first_video = self.getCurrentVideo();
-					// 
-					// console.log(Videos.getActive())
-					// 
-					// self.player = new window.YT.Player('player', {
-					// 	width: '300',
-					// 	height: '225',
-					// 	videoId: first_video.attributes.video_id,
-					// 	events: {
-					// 		'onReady': function(event) {
-					// 			first_video.markAsWatched();
-					// 			first_video.set('active', true);
-					// 			self.onPlayerReady(event);
-					// 		},
-					// 		'onStateChange': function(state)  {
-					// 			self.onStateChange(state);
-					// 		}
-					// 	}
-					// });
+					player_view.render(videos.models[0].attributes.video_id);
+					
+					self.videoViewList.render();
 				}
 			});
-			// 
-			// Videos.bind('change:active', function(video) {
-			// 	self.loadVideoById(video.attributes.video_id);
-			// });
 		},
 		
 		getCurrentVideo: function() {
 			return Videos.models[this.video_current];
-		},
-		
-		onPlayerReady: function(event) {
-			console.log('onPlayerReady')
-		},
-		
-		onStateChange: function(state) {
-			if (state.data == YT.PlayerState.BUFFERING) {
-				this.updateToggleButton('pause');
-			} else if (state.data == YT.PlayerState.PLAYING) {
-				this.updateToggleButton('pause');
-			} else if (state.data == YT.PlayerState.PAUSED) {
-				this.updateToggleButton('play');
-			} else if (state.data == YT.PlayerState.ENDED) {
-				this.updateToggleButton('stop');
-				this.nextVideo();
-			}
 		},
 		
 		toggleVideo: function() {
