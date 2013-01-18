@@ -31,7 +31,11 @@ require([
 	var router = new Workspace();
 	
 	Backbone.history.start();
-
+	
+	// Event aggregator
+	Ply = {};
+	Ply.evt = _.extend({}, Backbone.Events);
+	
 	// Initialize the application view
 	new AppView({
 		router: router

@@ -11,7 +11,7 @@ define([
 		initialize: function() {
 			console.log('video.init');
 			this.set({
-				video_id: this.getVideoIdByUrl(this.attributes.source)
+				video_id: this.getVideoIdByUrl(this.get('source'))
 			});
 		},
 		
@@ -33,11 +33,19 @@ define([
 			return url;
 		},
 		
+		activate: function() {
+			this.set('active', true);
+		},
+		
+		deactivate: function() {
+			this.set('active', false);
+		},
+		
 		markAsWatched: function() {
 			console.log('markAsWatched');
 			Backbone.sync('create', this, {
 				method: 'POST',
-				url: '/ply/me/video/' + this.attributes.id + '/watched'
+				url: '/ply/me/video/' + this.get('id') + '/watched'
 			});	
 		}
 	});

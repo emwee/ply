@@ -8,12 +8,7 @@ define([
 		
 		model: Video,
 		
-		url: '/ply/me/videos',
-		
-		getActive: function() {
-			console.log('--getActive');
-			return this.models[0];
-		}
+		url: '/ply/me/videos'
 	});
 	
 	return new Videos;

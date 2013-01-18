@@ -9,13 +9,13 @@ define([
 		initialize: function() {
 			console.log('--PlayerView init');
 			
-			var self = this;
+			_(this).bindAll('playVideoById', 'changeState');
 			
 			this.player = null;
 			
-			Ply.evt.on('ply:playVideo', function(video_id) {
-			  self.playVideoById(video_id);
-			});
+			Ply.evt.on('ply:video:play', this.playVideoById);
+			
+			Ply.evt.on('ply:player_controls:changeState', this.changeState);
 		},
 		
 		render: function (video_id) {
@@ -54,26 +54,32 @@ define([
 		},
 		
 		onPlayerReady: function(event) {
-			console.log('onPlayerReady')
+			
 		},
 		
 		onStateChange: function(state) {
-			
-			// if (state.data == YT.PlayerState.BUFFERING) {
-			// 	this.updateToggleButton('pause');
-			// } else if (state.data == YT.PlayerState.PLAYING) {
-			// 	this.updateToggleButton('pause');
-			// } else if (state.data == YT.PlayerState.PAUSED) {
-			// 	this.updateToggleButton('play');
-			// } else if (state.data == YT.PlayerState.ENDED) {
-			// 	this.updateToggleButton('stop');
-			// 	this.nextVideo();
-			// }
+			Ply.evt.trigger('ply:player:stateChange', state);
 		},
 		
 		playVideoById: function(id) {
 			console.log('--playVideoById');
 			this.player.loadVideoById(id);
+			this.pauseVideo();
+		},
+		
+		changeState: function(state) {
+			if (state == 'play') {
+				this.playVideo();
+			} else {
+				this.pauseVideo();
+			}
+		},
+		
+		playVideo: function() {
+			this.player.playVideo();
+		},
+		
+		pauseVideo: function() {
 			this.player.pauseVideo();
 		}
    });
