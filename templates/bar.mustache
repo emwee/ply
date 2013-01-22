@@ -1,5 +1,8 @@
 <header>
 	<div class='bar-inner'>
-		{{> account }}
+		<div id='controls'>
+		</div>
+		<div id='account' {{#logged_in}}data-user-id='{{logged_in}}'{{/logged_in}}>
+		</div>
 	</div>
 </header>

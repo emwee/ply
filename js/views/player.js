@@ -1,27 +1,60 @@
 define([
 	'jquery',
 	'underscore',
-	'backbone'
-], function($, _, Backbone) {
+	'backbone',
+	'text!templates/player.html'
+], function($, _, Backbone, playerTemplate) {
 	
 	var PlayerView = Backbone.View.extend({
+		
+		template: _.template(playerTemplate),
 		
 		initialize: function() {
 			console.log('--PlayerView init');
 			
 			_(this).bindAll('playVideoById', 'changeState');
 			
+			this.listenTo(this.model, 'change:video_id', function() {
+				this.playVideoById(this.model.get('video_id'));
+			});
+			
+			this.listenTo(this.model, 'change:state', function() {
+				this.changeState(this.model.get('state'));
+			});
+			
 			this.player = null;
-			
-			Ply.evt.on('ply:video:play', this.playVideoById);
-			
-			Ply.evt.on('ply:player_controls:changeState', this.changeState);
+		},
+		
+		playVideoById: function(id) {
+			if (this.player) {
+				this.player.loadVideoById(id);
+				this.pauseVideo();
+			}
+			else {
+				this.render(id);	
+			}
+		},
+		
+		changeState: function(state) {
+			if (state == 'playing') {
+				this.playVideo();
+			} else {
+				this.pauseVideo();
+			}
+		},
+		
+		playVideo: function() {
+			this.player.playVideo();
+		},
+		
+		pauseVideo: function() {
+			this.player.pauseVideo();
 		},
 		
 		render: function (video_id) {
-			console.log('--render PlayerView');
-			
 			var self = this;
+			
+			self.$el.html(self.template());
 			
 			window.YT || function() {
 				var s = document.createElement('script');
@@ -41,9 +74,9 @@ define([
 						'onReady': function(event) {
 							//first_video.markAsWatched();
 							//first_video.set('active', true);
-							self.onPlayerReady(event);
 						},
 						'onStateChange': function(state)  {
+							//Ply.evt.trigger('ply:player:stateChange', state);
 							self.onStateChange(state);
 						}
 					}
@@ -53,35 +86,18 @@ define([
 			return this;
 		},
 		
-		onPlayerReady: function(event) {
-			
-		},
-		
 		onStateChange: function(state) {
-			Ply.evt.trigger('ply:player:stateChange', state);
-		},
-		
-		playVideoById: function(id) {
-			console.log('--playVideoById');
-			this.player.loadVideoById(id);
-			this.pauseVideo();
-		},
-		
-		changeState: function(state) {
-			if (state == 'play') {
-				this.playVideo();
-			} else {
-				this.pauseVideo();
+			if (state.data == YT.PlayerState.BUFFERING) {
+				this.model.set('state', 'buffering');
+			} else if (state.data == YT.PlayerState.PLAYING) {
+				this.model.set('state', 'playing');
+			} else if (state.data == YT.PlayerState.PAUSED) {
+				this.model.set('state', 'paused');
+			} else if (state.data == YT.PlayerState.ENDED) {
+				this.model.set('state', 'ended');
 			}
-		},
-		
-		playVideo: function() {
-			this.player.playVideo();
-		},
-		
-		pauseVideo: function() {
-			this.player.pauseVideo();
 		}
+		
    });
 
 	return PlayerView;

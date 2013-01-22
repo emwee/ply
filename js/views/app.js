@@ -2,13 +2,16 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
+	'models/session',
+	'models/player',
 	'models/video',
 	'collections/videos',
+	'views/user',
 	'views/player',
 	'views/player_controls',
 	'views/playlist',
 	'routers/router'
-], function($, _, Backbone, Video, Videos, PlayerView, PlayerControlsView, PlaylistView, Workspace) {
+], function($, _, Backbone, Session, Player, Video, Videos, UserView, PlayerView, PlayerControlsView, PlaylistView, Workspace) {
 
 	var AppView = Backbone.View.extend({
 		
@@ -19,30 +22,64 @@ define([
 		initialize: function () {	
 			var self = this;
 			
-			var player_view = new PlayerView();
+			var session = new Session();
 			
-			var player_controls_view = new PlayerControlsView({
-				el: $('.bar-inner')[0]
+			var user_view = new UserView({
+				el: $('#account'),
+				model: session
 			});
 			
-			Videos.fetch({
-				success: function(videos) {
-					
-					var playlist_view = new PlaylistView({
-						collection: videos,
-						el: $('#playlist ul')
+			Ply.evt.on('ply:user:status', function(status) {
+				
+				user_view.render();
+				
+				if (status == 'authenticated') {
+					Videos.fetch({
+						success: function(videos) {
+							
+							// views
+							var player_view, player_controls_view, playlist_view;
+							
+							// models
+							var player = new Player();
+							
+							// YouTube player
+							player_view = new PlayerView({
+								el: $('#player2'),
+								model: player
+							});
+							
+							// player control buttons
+							player_controls_view = new PlayerControlsView({
+								el: $('#controls'),
+								model: player
+							});
+							
+							// playlist
+							playlist_view = new PlaylistView({
+								collection: videos,
+								el: $('#playlist ul'),
+								model: player
+							});
+							
+							Ply.evt.on('ply:player_controls:nextVideo', playlist_view.nextVideo);
+							Ply.evt.on('ply:player_controls:prevVideo', playlist_view.prevVideo);
+							
+							var video_id = videos.models[0].get('video_id');
+							
+							player_view.render(video_id);
+							player_controls_view.render();
+							playlist_view.render();
+						}
 					});
-					
-					// can be done more elegant.. anyway, the player needs some youtube id
-					player_view.render(
-						videos.models[0].get('video_id')
-					);
-					
-					player_controls_view.render();
-					
-					playlist_view.render();
+				}
+				else if (status == 'not_authenticated') {
+					console.log('not_authenticated');
 				}
 			});
+		},
+		
+		render: function() {
 		}
 	});
 	

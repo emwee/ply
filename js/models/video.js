@@ -4,6 +4,7 @@ define([
 ], function( _, Backbone ) {
 	
 	var Video = Backbone.Model.extend({
+		
 		defaults: {
 			'active': false
 		},
@@ -13,12 +14,6 @@ define([
 			this.set({
 				video_id: this.getVideoIdByUrl(this.get('source'))
 			});
-		},
-		
-		validate: function(attributes) {
-			if (attributes.name == '') {
-				return { name: 'Name '};
-			}
 		},
 		
 		getVideoIdByUrl: function(url) {	
@@ -33,11 +28,11 @@ define([
 			return url;
 		},
 		
-		activate: function() {
+		setActive: function() {
 			this.set('active', true);
 		},
 		
-		deactivate: function() {
+		setInactive: function() {
 			this.set('active', false);
 		},
 		

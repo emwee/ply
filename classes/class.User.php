@@ -95,7 +95,6 @@ class User {
 		// $video = new Video($this->redis, $this->mongo);
 		// $feed = $video->getFeedForUser($this->getAuthUserId());
 		
-		
 		$feed = array();
 		
 		$auth_user = $this->mongo->fb_users->findOne(array('id' => $this->getAuthUserId()));
@@ -109,7 +108,6 @@ class User {
 			if ($entries) {
 				
 				foreach($entries as $entry) {
-					
 					
 					$feed_entry = array(
 						'id' => $entry['id'],

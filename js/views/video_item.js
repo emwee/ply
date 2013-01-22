@@ -13,7 +13,6 @@ define([
 		template: _.template(videoTemplate),
 		
 		initialize: function() {
-			this.model.bind('add', this.addMember, this);
 		},
 		
 		render: function () {

@@ -1,6 +1,6 @@
 <nav id='controls'>
 	<span class='control' id='toggle-video' >
-		<span class='icon-play'></span>
+		<span class='<% if (state == 'playing') { %>icon-pause<% } else { %>icon-play<% } %>'></span>
 	</span>
 	<span class='control control-nav' id='prev-video'>
 		<span class='icon-backward'></span>
@@ -8,4 +8,5 @@
 	<span class='control control-nav' id='next-video'>
 		<span class='icon-forward'></span>
 	</span>
+	---<%= state %>
 </nav>

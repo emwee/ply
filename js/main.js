@@ -6,6 +6,9 @@ require.config({
 		'underscore': {
 			exports: '_'
 		},
+		'facebook': {
+			exports: 'FB'
+		},
 		'backbone': {
 			deps: [
 				'underscore',
@@ -18,6 +21,7 @@ require.config({
 		jquery: 'lib/jquery/jquery.min',
 		underscore: 'lib/underscore/underscore',
 		backbone: 'lib/backbone/backbone',
+		facebook : 'lib/facebook/all',
 		text: 'lib/require/text'
 	}
 });
@@ -25,7 +29,7 @@ require.config({
 require([
 	'views/app',
 	'routers/router'
-], function( AppView, Workspace ) {
+], function(AppView, Workspace) {
 	
 	// Initialize routing and start Backbone.history()
 	var router = new Workspace();

@@ -4,6 +4,9 @@
 		'underscore': {
 			exports: '_'
 		},
+		'facebook': {
+			exports: 'FB'
+		},
 		'backbone': {
 			deps: [
 				'underscore',
@@ -16,6 +19,7 @@
 		jquery: 'lib/jquery/jquery.min',
 		underscore: 'lib/underscore/underscore',
 		backbone: 'lib/backbone/backbone',
+		facebook : 'lib/facebook/all',
 		text: 'lib/require/text'
 	},
 	name: "main",
