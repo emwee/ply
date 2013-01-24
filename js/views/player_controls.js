@@ -16,11 +16,7 @@ define([
 		},
 		
 		initialize: function() {
-			console.log('--PlayerControlsView init');
-			
 			_(this).bindAll('toggleVideo', 'nextVideo', 'prevVideo');
-			
-			var self = this
 			
 			this.listenTo(this.model, 'change:state', function() {
 				this.render();
@@ -43,7 +39,6 @@ define([
 		prevVideo: function() {
 			Ply.evt.trigger('ply:player_controls:prevVideo');
 		}
-		
    });
 
 	return PlayerControlsView;

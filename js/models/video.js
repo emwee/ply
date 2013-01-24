@@ -5,18 +5,14 @@ define([
 	
 	var Video = Backbone.Model.extend({
 		
-		defaults: {
-			'active': false
-		},
-		
 		initialize: function() {
 			console.log('video.init');
 			this.set({
-				video_id: this.getVideoIdByUrl(this.get('source'))
+				youtube_id: this.getYouTubeIdByUrl(this.get('source'))
 			});
 		},
 		
-		getVideoIdByUrl: function(url) {	
+		getYouTubeIdByUrl: function(url) {	
 			// regexp taken from http://stackoverflow.com/a/9102270
 			var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
 			var match = url.match(regExp);
@@ -26,14 +22,6 @@ define([
 			
 			// error
 			return url;
-		},
-		
-		setActive: function() {
-			this.set('active', true);
-		},
-		
-		setInactive: function() {
-			this.set('active', false);
 		},
 		
 		markAsWatched: function() {

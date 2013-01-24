@@ -8,8 +8,58 @@ define([
 		
 		model: Video,
 		
-		url: '/ply/me/videos'
+		url: '/ply/me/videos',
+		
+		initialize:function () {
+			this.active_video = null;
+			this.last_active_video = null;
+		},
+		
+		comparator: function(model) {
+			return model.get('id');
+		},
+		
+		getActiveVideo: function() {
+			return this.active_video;
+		},
+		
+		getLastActiveVideo: function() {
+			console.log('--getLastActiveVideo')
+			console.log(this.last_active_video)
+			return this.last_active_video;
+		},
+		
+		setActiveVideo: function(video) {
+			console.log('--setActiveVideo')
+			if (this.active_video) {
+				this.last_active_video = this.active_video;
+			}
+			
+			this.active_video = video;
+		},
+		
+		next: function () {
+			var index = this.indexOf(this.getActiveVideo()) + 1;
+			
+			if (index == this.length) {
+				index = 0;
+			}
+			
+			this.setActiveVideo(this.at(index));
+			return this;
+		},
+		
+		prev: function() {
+			var index = this.indexOf(this.getActiveVideo()) - 1;
+			
+			if (index < 0) {
+				index = this.length - 1;
+			}
+			
+			this.setActiveVideo(this.at(index));
+			return this;
+		}
 	});
 	
-	return new Videos;
+	return Videos;
 });

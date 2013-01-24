@@ -14,8 +14,8 @@ define([
 			
 			_(this).bindAll('playVideoById', 'changeState');
 			
-			this.listenTo(this.model, 'change:video_id', function() {
-				this.playVideoById(this.model.get('video_id'));
+			this.listenTo(this.model, 'change:youtube_id', function() {
+				this.playVideoById(this.model.get('youtube_id'));
 			});
 			
 			this.listenTo(this.model, 'change:state', function() {
@@ -25,13 +25,13 @@ define([
 			this.player = null;
 		},
 		
-		playVideoById: function(id) {
+		playVideoById: function(youtube_id) {
 			if (this.player) {
-				this.player.loadVideoById(id);
+				this.player.loadVideoById(youtube_id);
 				this.pauseVideo();
 			}
 			else {
-				this.render(id);	
+				this.render(youtube_id);	
 			}
 		},
 		
@@ -51,7 +51,12 @@ define([
 			this.player.pauseVideo();
 		},
 		
-		render: function (video_id) {
+		render: function (youtube_id) {
+			
+			if (this.player) {
+				return;
+			}
+			
 			var self = this;
 			
 			self.$el.html(self.template());
@@ -69,7 +74,7 @@ define([
 				self.player = new window.YT.Player('player', {
 					width: '300',
 					height: '225',
-					videoId: video_id,
+					videoId: youtube_id,
 					events: {
 						'onReady': function(event) {
 							//first_video.markAsWatched();

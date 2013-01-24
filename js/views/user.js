@@ -37,6 +37,11 @@ define([
 			
 			this.$el.html(this.template(data));
 			return this;
+		},
+		
+		close: function() {
+			this.remove();
+			this.unbind();
 		}
    });
 

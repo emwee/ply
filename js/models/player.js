@@ -7,7 +7,7 @@ define([
 		
 		defaults: {
 			state: null,
-			video_id: null
+			youtube_id: null
 		},
 		
 		initialize: function() {
@@ -19,6 +19,7 @@ define([
 		
 		toggleState: function() {
 			var state = this.get('state');
+			
 			if (state == 'playing') {
 				this.setState('paused');
 			} else {
@@ -26,8 +27,9 @@ define([
 			}
 		},
 		
-		setVideoId: function(video_id) {
-			this.set('video_id', video_id);
+		setYouTubeId: function(youtube_id) {
+			Ply.evt.trigger('ply:player:videoChanged', youtube_id);
+			this.set('youtube_id', youtube_id);
 		}
 	});
 

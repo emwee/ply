@@ -15,9 +15,21 @@ define([
 		initialize: function() {
 		},
 		
+		setActive: function() {
+			this.active = true;
+		},
+		
+		removeActive: function() {
+			this.active = false;
+		},
+		
 		render: function () {
-			console.log('--render VideoView');
-			this.$el.html(this.template(this.model.toJSON()));
+			var data = {
+				active: this.active,
+				video: this.model.toJSON()
+			}
+			
+			this.$el.html(this.template(data));
 			return this;
 		}
    });

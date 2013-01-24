@@ -27,21 +27,13 @@ require.config({
 });
 
 require([
-	'views/app',
-	'routers/router'
-], function(AppView, Workspace) {
-	
-	// Initialize routing and start Backbone.history()
-	var router = new Workspace();
-	
-	Backbone.history.start();
+	'views/app'
+], function(AppView) {
 	
 	// Event aggregator
 	Ply = {};
 	Ply.evt = _.extend({}, Backbone.Events);
 	
 	// Initialize the application view
-	new AppView({
-		router: router
-	});
+	new AppView();
 });
