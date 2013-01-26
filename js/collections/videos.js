@@ -24,13 +24,10 @@ define([
 		},
 		
 		getLastActiveVideo: function() {
-			console.log('--getLastActiveVideo')
-			console.log(this.last_active_video)
 			return this.last_active_video;
 		},
 		
 		setActiveVideo: function(video) {
-			console.log('--setActiveVideo')
 			if (this.active_video) {
 				this.last_active_video = this.active_video;
 			}
