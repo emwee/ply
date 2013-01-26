@@ -10,9 +10,6 @@ define([
 			youtube_id: null
 		},
 		
-		initialize: function() {
-		},
-		
 		setState: function(state) {
 			this.set('state', state);
 		},
@@ -25,6 +22,10 @@ define([
 			} else {
 				this.setState('playing');
 			}
+		},
+		
+		getYouTubeId: function() {
+			return this.get('youtube_id');
 		},
 		
 		setYouTubeId: function(youtube_id) {

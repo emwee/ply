@@ -19,8 +19,10 @@ define([
 			_(this).bindAll('toggleVideo', 'nextVideo', 'prevVideo');
 			
 			this.listenTo(this.model, 'change:state', function() {
-				this.render();
+				this.render();	
 			});
+			
+			this.render();
 		},
 		
 		render: function () {
@@ -33,11 +35,13 @@ define([
 		},
 		
 		nextVideo: function() {
-			Ply.evt.trigger('ply:player_controls:nextVideo');
+			var video = this.collection.getNextVideo();
+			this.model.setYouTubeId(video.get('youtube_id'));
 		},
 		
 		prevVideo: function() {
-			Ply.evt.trigger('ply:player_controls:prevVideo');
+			var video = this.collection.getPrevVideo();
+			this.model.setYouTubeId(video.get('youtube_id'));
 		}
    });
 

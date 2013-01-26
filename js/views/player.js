@@ -23,6 +23,8 @@ define([
 			});
 			
 			this.player = null;
+			
+			this.render();
 		},
 		
 		playVideoById: function(youtube_id) {
@@ -51,7 +53,7 @@ define([
 			this.player.pauseVideo();
 		},
 		
-		render: function (youtube_id) {
+		render: function () {
 			
 			if (this.player) {
 				return;
@@ -74,14 +76,11 @@ define([
 				self.player = new window.YT.Player('player', {
 					width: '300',
 					height: '225',
-					videoId: youtube_id,
+					videoId: self.model.get('youtube_id'),
 					events: {
 						'onReady': function(event) {
-							//first_video.markAsWatched();
-							//first_video.set('active', true);
 						},
-						'onStateChange': function(state)  {
-							//Ply.evt.trigger('ply:player:stateChange', state);
+						'onStateChange': function(state) {
 							self.onStateChange(state);
 						}
 					}

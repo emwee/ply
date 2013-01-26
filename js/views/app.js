@@ -31,10 +31,6 @@ define([
 			
 			var vids = new Videos();
 			
-			vids.on('reset', function(videos) {
-				vids.setActiveVideo(videos.at(0))
-			})
-			
 			Ply.evt.on('ply:user:status', function(status) {
 				
 				user_view.render();
@@ -47,11 +43,18 @@ define([
 							
 							// views
 							var player_view, player_controls_view, playlist_view;
-							
-							var player_router = new Router();
 														
 							// models
 							var player = new Player();
+							
+							player.on('change:youtube_id', function(video) {
+								var youtube_id = video.get('youtube_id')
+								var active_video = vids.where({ 'youtube_id': youtube_id })[0];
+								vids.setActiveVideo(active_video);
+							});
+							
+							// routers
+							var player_router = new Router();
 
 							// YouTube player
 							player_view = new PlayerView({
@@ -62,40 +65,30 @@ define([
 							// player control buttons
 							player_controls_view = new PlayerControlsView({
 								model: player,
-								el: $('#controls'),
+								collection: videos,
+								el: $('#controls')
 							});
 							
 							// playlist
 							playlist_view = new PlaylistView({
+								el: $('#playlist ul'),
 								model: player,
 								collection: videos,
-								el: $('#playlist ul')
+								router: player_router
 							});
 							
-							
-							Ply.evt.on('ply:player_controls:nextVideo', playlist_view.nextVideo);
-							Ply.evt.on('ply:player_controls:prevVideo', playlist_view.prevVideo);
-							
-							Ply.evt.on('ply:player:videoChanged', function(youtube_id) {
-								player_router.navigate('video/' + youtube_id)
-							});
-							
-							var first_video = vids.at(0);
-							var youtube_id = first_video.get('youtube_id');
-							
-							player.setYouTubeId(youtube_id);
-							player_view.render(youtube_id);
-							playlist_view.setSelected(first_video);
-							
-							player_controls_view.render();
-							
-							player_router.on("route:loadVideo", function(youtube_id) {
+							Ply.evt.on('ply:router:defaultRoute', function() {
+								console.log('--defaultRoute matched')
+								var first_video = vids.at(0);
+								var youtube_id = first_video.get('youtube_id');
 								player.setYouTubeId(youtube_id);
-								var video = vids.where({'youtube_id': youtube_id})[0];
-								vids.setActiveVideo(video);
-								playlist_view.setSelected(video);
 							});
-
+							
+							Ply.evt.on('ply:router:loadVideo', function(youtube_id) {
+								console.log('--loadVideo route matched')
+								player.setYouTubeId(youtube_id);
+							});
+							
 							Backbone.history.start();
 						}
 					});

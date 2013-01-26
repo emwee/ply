@@ -28,6 +28,7 @@ define([
 		},
 		
 		setActiveVideo: function(video) {
+			
 			if (this.active_video) {
 				this.last_active_video = this.active_video;
 			}
@@ -35,26 +36,24 @@ define([
 			this.active_video = video;
 		},
 		
-		next: function () {
+		getNextVideo: function() {
 			var index = this.indexOf(this.getActiveVideo()) + 1;
 			
 			if (index == this.length) {
 				index = 0;
 			}
 			
-			this.setActiveVideo(this.at(index));
-			return this;
+			return this.at(index);
 		},
 		
-		prev: function() {
+		getPrevVideo: function() {
 			var index = this.indexOf(this.getActiveVideo()) - 1;
 			
 			if (index < 0) {
 				index = this.length - 1;
 			}
 			
-			this.setActiveVideo(this.at(index));
-			return this;
+			return this.at(index);
 		}
 	});
 	

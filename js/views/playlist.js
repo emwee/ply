@@ -12,7 +12,7 @@ define([
 		},
 		
 		initialize: function() {
-			console.log('--VideoListView init');
+			console.log('--PlaylistView init');
 			
 			_(this).bindAll('add', 'nextVideo', 'prevVideo');
 			
@@ -21,6 +21,39 @@ define([
 			
 			// add videos to the view
 			this.collection.each(this.add);
+			
+			// let's use a better reference name
+			this.player = this.model;
+			
+			this.listenTo(this.model, 'change:youtube_id', function() {
+				var youtube_id = this.model.getYouTubeId();
+				var active_video = this.collection.where({ 'youtube_id': youtube_id })[0];
+				this.highlight(active_video);
+			});
+		},
+		
+		highlight: function(video) {
+			var active_index, last_active, last_active_index;
+			
+			// get index of active video
+			active_index = this.collection.indexOf(video);
+			
+			// re-render the corresponding view
+			this.video_item_views[active_index].setActive();
+			
+			// see if there was a previously selected video
+			last_active = this.collection.getLastActiveVideo();
+			
+			// re-render the corresponding view if there is one
+			if (last_active) {
+				last_active_index = this.collection.indexOf(last_active);
+				this.video_item_views[last_active_index].removeActive();
+			}
+			
+			// mark this video as watched
+			video.markAsWatched();
+			
+			this.render();
 		},
 		
 		add: function(video) {
@@ -42,53 +75,33 @@ define([
 			id = $(e.currentTarget).data("id");
 			selected = this.collection.get(id);
 			
-			// set selected video as active
-			this.collection.setActiveVideo(selected);
+			// mark this video as selected
+			//this.collection.setActiveVideo(selected);
 			
-			this.setSelected(selected);
+			this.options.router.navigate('video/' + selected.get('youtube_id'))
+			
+			// tell the player to play this item
+			this.model.setYouTubeId(selected.get('youtube_id'));
 		},
 		
 		prevVideo: function() {
-			var prev_video;
-			this.collection.prev();
-			prev_video = this.collection.getActiveVideo();
-			console.log(prev_video);
-			this.setSelected(prev_video);
+		// 	var prev_video;
+		// 	this.collection.prev();
+		// 	prev_video = this.collection.getActiveVideo();
+		// 	this.setYouTubeId(next_video.get('youtube_id'));
 		},
 		
 		nextVideo: function() {
-			var next_video;
-			this.collection.next();
-			next_video = this.collection.getActiveVideo();
-			this.setSelected(next_video);
+		// 	var next_video;
+		// 	this.collection.next();
+		// 	next_video = this.collection.getActiveVideo();
+		// 	this.setYouTubeId(next_video.get('youtube_id'));
 		},
+		// 
+		// setYouTubeId: function(youtube_id) {
+		// 	this.player.setYouTubeId(youtube_id);
+		// },
 		
-		setSelected: function(video) {
-			var active_index, last_active, last_active_index;
-			
-			// get index of active video
-			active_index = this.collection.indexOf(video);
-			
-			// re-render the corresponding view
-			this.video_item_views[active_index].setActive();
-			
-			last_active = this.collection.getLastActiveVideo();
-			
-			// re-render the corresponding view if there is one
-			if (last_active) {
-				last_active_index = this.collection.indexOf(last_active);
-				this.video_item_views[last_active_index].removeActive();
-			}
-			
-			// mark this video as watched
-			video.markAsWatched();
-			
-			// tell the player to play this item
-			this.model.setYouTubeId(video.get('youtube_id'));
-			
-			// re-render the playlist
-			this.render();
-		},
 		
 		render: function () {
 			var self = this;
@@ -99,7 +112,6 @@ define([
 			
 			return this;
 		}
-		
    });
 
 	return PlaylistView;
